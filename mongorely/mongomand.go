@@ -32,10 +32,10 @@ func Create(ctx context.Context, model MongoModel, opts ...*options.InsertOneOpt
 	return err
 }
 
-func Update(ctx context.Context, collName string, filter interface{}, update interface{}) error {
+func UpdateMany(ctx context.Context, collName string, filter interface{}, update interface{}) error {
 	col := db.Collection(collName)
 
-	_, err := col.UpdateOne(ctx, filter, update)
+	_, err := col.UpdateMany(ctx, filter, update)
 
 	return err
 }
@@ -51,7 +51,7 @@ func Find(ctx context.Context, collName string, models interface{}, filter inter
 	return cur.All(ctx, models)
 }
 
-//Flush, **** DONT USE
+//Flush, Clear all records of collection, use it carefully
 func Flush(ctx context.Context, collName string) error {
 	col := db.Collection(collName)
 

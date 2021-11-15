@@ -2,6 +2,10 @@ package mongoquery
 
 import "go.mongodb.org/mongo-driver/bson"
 
+func Init(e ...bson.E) bson.D {
+	return e
+}
+
 func In(fieldName string, value ...interface{}) bson.E {
 	return bson.E{Key: fieldName, Value: bson.M{"$in": value}}
 }
