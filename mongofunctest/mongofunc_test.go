@@ -1,13 +1,13 @@
-package monmongofunctest
+package mongofunctest
 
 import (
 	"context"
 	"errors"
 	"testing"
 
-	"github.com/func25/mongofunc/monmongofunc/mongoquery"
-	"github.com/func25/mongofunc/monmongofunc/mongorely"
-	"github.com/func25/mongofunc/monmongofunc/mongoseed"
+	"github.com/func25/mongofunc/mongoquery"
+	"github.com/func25/mongofunc/mongorely"
+	"github.com/func25/mongofunc/mongoseed"
 
 	"go.mongodb.org/mongo-driver/bson"
 )
