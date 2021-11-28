@@ -39,7 +39,7 @@ func TestSearchHeroes_In(t *testing.T) {
 	exactCount1 := 2
 	exactCount2 := 3
 	filter := mongoquery.Init(
-		mongoquery.In("damage", exactCount1, exactCount2),
+		mongoquery.InEllipsis("damage", exactCount1, exactCount2),
 	)
 	if count, err := mongorely.Count(ctx, COLLECTION_NAME, filter); err != nil {
 		t.Error("mongoquery IN failed", err)
@@ -53,7 +53,7 @@ func TestSearchHeroes_NotIn(t *testing.T) {
 	exactCount1 := 2
 	exactCount2 := 3
 	filter := mongoquery.Init(
-		mongoquery.NotIn("damage", exactCount1, exactCount2),
+		mongoquery.NotInEllipsis("damage", exactCount1, exactCount2),
 	)
 	if count, err := mongorely.Count(ctx, COLLECTION_NAME, filter); err != nil {
 		t.Error("mongoquery IN failed", err)
