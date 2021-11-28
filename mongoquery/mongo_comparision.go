@@ -11,11 +11,19 @@ func Init(e ...bson.E) bson.D {
 	return e
 }
 
-func In(fieldName string, value ...interface{}) bson.E {
+func InEllipsis(fieldName string, value ...interface{}) bson.E {
 	return bson.E{Key: fieldName, Value: bson.M{"$in": value}}
 }
 
-func NotIn(fieldName string, value ...interface{}) bson.E {
+func InArray(fieldName string, value interface{}) bson.E {
+	return bson.E{Key: fieldName, Value: bson.M{"$in": value}}
+}
+
+func NotInEllipsis(fieldName string, value ...interface{}) bson.E {
+	return bson.E{Key: fieldName, Value: bson.M{"$nin": value}}
+}
+
+func NotInArray(fieldName string, value interface{}) bson.E {
 	return bson.E{Key: fieldName, Value: bson.M{"$nin": value}}
 }
 
