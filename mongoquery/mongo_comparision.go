@@ -1,6 +1,11 @@
 package mongoquery
 
-import "go.mongodb.org/mongo-driver/bson"
+import (
+	"time"
+
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
+)
 
 func Init(e ...bson.E) bson.D {
 	return e
@@ -30,6 +35,10 @@ func EqualGreaterInt(fieldName string, value int) bson.E {
 
 func EqualGreaterInt64(fieldName string, value int64) bson.E {
 	return bson.E{Key: fieldName, Value: bson.M{"$gte": value}}
+}
+
+func EqualGreaterTime(fieldName string, value time.Time) bson.E {
+	return bson.E{Key: fieldName, Value: bson.M{"$gte": primitive.NewDateTimeFromTime(value)}}
 }
 
 func GreaterInt(fieldName string, value int) bson.E {
