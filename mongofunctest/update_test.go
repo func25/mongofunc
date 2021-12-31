@@ -14,10 +14,12 @@ func TestUpdateHero_Set(t *testing.T) {
 	filter := mongoquery.Init(
 		mongoquery.Equal("damage", ROUND),
 	)
-	update := mongoquery.Set(mongoquery.PairSetter{
-		FieldName: "damage",
-		Value:     -ROUND,
-	})
+	update := mongoquery.Init(
+		mongoquery.Set(mongoquery.PairSetter{
+			FieldName: "damage",
+			Value:     -ROUND,
+		}),
+	)
 
 	if err := mongorely.UpdateMany(ctx, COLLECTION_NAME, filter, update); err != nil {
 		t.Error("mongoquery Set failed 1", err)
@@ -35,10 +37,13 @@ func TestUpdateHero_Set(t *testing.T) {
 		return
 	}
 
-	update2 := mongoquery.Set(mongoquery.PairSetter{
-		FieldName: "damage",
-		Value:     ROUND,
-	})
+	update2 := mongoquery.Init(
+		mongoquery.Set(mongoquery.PairSetter{
+			FieldName: "damage",
+			Value:     ROUND,
+		}),
+	)
+
 	if err := mongorely.UpdateMany(ctx, COLLECTION_NAME, filter2, update2); err != nil {
 		t.Error("mongoquery Set failed 4", err)
 		return
@@ -60,10 +65,12 @@ func TestUpdateHero_IncInt(t *testing.T) {
 	filter := mongoquery.Init(
 		mongoquery.Equal("damage", ROUND),
 	)
-	update := mongoquery.IncInt(mongoquery.PairSetterInt{
-		FieldName: "damage",
-		Value:     extra,
-	})
+	update := mongoquery.Init(
+		mongoquery.IncInt(mongoquery.PairSetterInt{
+			FieldName: "damage",
+			Value:     extra,
+		}),
+	)
 
 	if err := mongorely.UpdateMany(ctx, COLLECTION_NAME, filter, update); err != nil {
 		t.Error("mongoquery Set failed 1", err)
@@ -81,10 +88,13 @@ func TestUpdateHero_IncInt(t *testing.T) {
 		return
 	}
 
-	update2 := mongoquery.IncInt(mongoquery.PairSetterInt{
-		FieldName: "damage",
-		Value:     -extra,
-	})
+	update2 := mongoquery.Init(
+		mongoquery.IncInt(mongoquery.PairSetterInt{
+			FieldName: "damage",
+			Value:     -extra,
+		}),
+	)
+
 	if err := mongorely.UpdateMany(ctx, COLLECTION_NAME, filter2, update2); err != nil {
 		t.Error("mongoquery Set failed 4", err)
 		return
@@ -105,7 +115,9 @@ func TestUpdateHero_Push(t *testing.T) {
 	filter := mongoquery.Init(
 		mongoquery.Equal("damage", ROUND),
 	)
-	update := mongoquery.Push(mongoquery.PairSetter{FieldName: "skillIds", Value: 6})
+	update := mongoquery.Init(
+		mongoquery.Push(mongoquery.PairSetter{FieldName: "skillIds", Value: 6}),
+	)
 
 	if err := mongorely.UpdateMany(ctx, COLLECTION_NAME, filter, update); err != nil {
 		t.Error("mongoquery Set failed 1", err)

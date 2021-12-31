@@ -3,8 +3,10 @@ package mongorely
 import (
 	"context"
 	"errors"
+	"fmt"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
@@ -36,6 +38,25 @@ func UpdateMany(ctx context.Context, collName string, filter interface{}, update
 	col := db.Collection(collName)
 
 	_, err := col.UpdateMany(ctx, filter, update)
+
+	return err
+}
+
+func UpdateManyWithResult(ctx context.Context, collName string, filter interface{}, update interface{}) (*mongo.UpdateResult, error) {
+	col := db.Collection(collName)
+	return col.UpdateMany(ctx, filter, update)
+}
+
+func Aggregate(ctx context.Context, req *AggregationRequest) error {
+	col := db.Collection(req.CollectionName)
+
+	cursor, err := col.Aggregate(ctx, req.Pipeline, req.Options...)
+	if err != nil {
+		return err
+	}
+	fmt.Println(cursor)
+
+	err = cursor.All(ctx, &req.Result)
 
 	return err
 }

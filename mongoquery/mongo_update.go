@@ -9,35 +9,35 @@ const (
 )
 
 // SET
-func Set(pairs ...PairSetter) bson.D {
-	return bson.D{{Key: sET, Value: Pair(pairs)}}
+func Set(pairs ...PairSetter) bson.E {
+	return bson.E{Key: sET, Value: toPair(pairs)}
 }
 
 // INC
-func IncInt(pairs ...PairSetterInt) bson.D {
+func IncInt(pairs ...PairSetterInt) bson.E {
 	pairLen := len(pairs)
 	updated := bson.D{}
 	for i := 0; i < pairLen; i++ {
 		updated = append(updated, bson.E{Key: pairs[i].FieldName, Value: pairs[i].Value})
 	}
-	return bson.D{{Key: iNC, Value: updated}}
+	return bson.E{Key: iNC, Value: updated}
 }
 
-func IncInt64(pairs ...PairSetterInt64) bson.D {
+func IncInt64(pairs ...PairSetterInt64) bson.E {
 	pairLen := len(pairs)
 	updated := bson.D{}
 	for i := 0; i < pairLen; i++ {
 		updated = append(updated, bson.E{Key: pairs[i].FieldName, Value: pairs[i].Value})
 	}
-	return bson.D{{Key: iNC, Value: updated}}
+	return bson.E{Key: iNC, Value: updated}
 }
 
 // PUSH
-func Push(pairs ...PairSetter) bson.D {
-	return bson.D{{Key: pUSH, Value: Pair(pairs)}}
+func Push(pairs ...PairSetter) bson.E {
+	return bson.E{Key: pUSH, Value: toPair(pairs)}
 }
 
-func Pair(pairs []PairSetter) bson.D {
+func toPair(pairs []PairSetter) bson.D {
 	pairLen := len(pairs)
 	updated := bson.D{}
 	for i := 0; i < pairLen; i++ {
