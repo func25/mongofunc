@@ -34,6 +34,14 @@ func Create(ctx context.Context, model MongoModel, opts ...*options.InsertOneOpt
 	return err
 }
 
+func UpdateOne(ctx context.Context, collName string, filter interface{}, update interface{}, opts ...*options.UpdateOptions) error {
+	col := db.Collection(collName)
+
+	_, err := col.UpdateOne(ctx, filter, update, opts...)
+
+	return err
+}
+
 func UpdateMany(ctx context.Context, collName string, filter interface{}, update interface{}) error {
 	col := db.Collection(collName)
 

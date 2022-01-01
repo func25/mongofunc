@@ -9,11 +9,12 @@ import (
 
 type Hero struct {
 	mongorely.ObjectId `bson:",inline"`
-	Name               string `bson:"name"`
-	Damage             int    `bson:"damage"`
-	SkillIds           []int  `bson:"skillIds"`
-	Omit               int    `bson:"omit,omitempty"`
-	NotOmit            int    `bson:"notomit"`
+	Name               string       `bson:"name"`
+	Damage             int          `bson:"damage"`
+	SkillIds           []int        `bson:"skillIds"`
+	Omit               int          `bson:"omit,omitempty"`
+	NotOmit            int          `bson:"notomit"`
+	Subhero            map[int]Hero `bson:"subhero"`
 }
 
 const COLLECTION_NAME = "Heroes"
