@@ -83,7 +83,7 @@ func TestSearchHeroes_GreaterInt(t *testing.T) {
 	num := TOTAL - compNum*(compNum+1)/2
 
 	filter := mongoquery.Init(
-		mongoquery.GreaterInt("damage", compNum),
+		mongoquery.Greater("damage", compNum),
 	)
 	if count, err := mongorely.Count(ctx, COLLECTION_NAME, filter); err != nil {
 		t.Error("mongoquery GreaterInt failed", err)
@@ -113,7 +113,7 @@ func TestSearchHeroes_EqualGreaterInt(t *testing.T) {
 	num := TOTAL - compNum*(compNum-1)/2
 
 	filter := mongoquery.Init(
-		mongoquery.EqualGreaterInt("damage", compNum),
+		mongoquery.EqualGreater("damage", compNum),
 	)
 	if count, err := mongorely.Count(ctx, COLLECTION_NAME, filter); err != nil {
 		t.Error("mongoquery EqualGreaterInt failed", err)

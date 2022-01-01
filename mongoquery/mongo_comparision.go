@@ -37,11 +37,7 @@ func Less(fieldName string, value interface{}) bson.E {
 }
 
 // GREATER OR EQUAL
-func EqualGreaterInt(fieldName string, value int) bson.E {
-	return bson.E{Key: fieldName, Value: bson.M{"$gte": value}}
-}
-
-func EqualGreaterInt64(fieldName string, value int64) bson.E {
+func EqualGreater(fieldName string, value interface{}) bson.E {
 	return bson.E{Key: fieldName, Value: bson.M{"$gte": value}}
 }
 
@@ -49,11 +45,7 @@ func EqualGreaterTime(fieldName string, value time.Time) bson.E {
 	return bson.E{Key: fieldName, Value: bson.M{"$gte": primitive.NewDateTimeFromTime(value)}}
 }
 
-func GreaterInt(fieldName string, value int) bson.E {
-	return bson.E{Key: fieldName, Value: bson.M{"$gt": value}}
-}
-
-func GreaterInt64(fieldName string, value int64) bson.E {
+func Greater(fieldName string, value interface{}) bson.E {
 	return bson.E{Key: fieldName, Value: bson.M{"$gt": value}}
 }
 
