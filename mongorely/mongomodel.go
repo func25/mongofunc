@@ -34,7 +34,7 @@ type AggregationRequest struct {
 }
 
 func (cfg *DbConfig) ToConnectionString() string {
-	link := fmt.Sprintf("%s:%s/?w=majority", cfg.Host, cfg.Port)
+	link := fmt.Sprintf("%s:%s/?w=majority&retryWrites=false", cfg.Host, cfg.Port)
 
 	// if cfg.IsReplica {
 	// 	link = fmt.Sprintf("%s", cfg.ReplicaSet)
@@ -48,4 +48,10 @@ func (cfg *DbConfig) ToConnectionString() string {
 	}
 
 	return uri
+}
+
+// TransactionConfig, you can just define the func, the transaction options are not really need with simple application
+type TransactionConfig struct {
+	Options options.TransactionOptions
+	Func    func(ctx mongo.SessionContext) (interface{}, error)
 }

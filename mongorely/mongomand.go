@@ -2,57 +2,18 @@ package mongorely
 
 import (
 	"context"
-	"errors"
 	"fmt"
 
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-var (
-	ErrCollNotFound = errors.New("cannot find the collection of model")
-)
-
 func Count(ctx context.Context, collName string, filter interface{}, opts ...*options.CountOptions) (int64, error) {
-	col := db.Collection(collName)
-	if col == nil {
-		return -1, ErrCollNotFound
-	}
-
-	return col.CountDocuments(ctx, filter, opts...)
+	return db.Collection(collName).CountDocuments(ctx, filter, opts...)
 }
 
-func Create(ctx context.Context, model MongoModel, opts ...*options.InsertOneOptions) error {
-	col := db.Collection(model.GetMongoCollName())
-	if col == nil {
-		return ErrCollNotFound
-	}
-
-	_, err := col.InsertOne(ctx, model, opts...)
-
-	return err
-}
-
-func UpdateOne(ctx context.Context, collName string, filter interface{}, update interface{}, opts ...*options.UpdateOptions) error {
-	col := db.Collection(collName)
-
-	_, err := col.UpdateOne(ctx, filter, update, opts...)
-
-	return err
-}
-
-func UpdateMany(ctx context.Context, collName string, filter interface{}, update interface{}) error {
-	col := db.Collection(collName)
-
-	_, err := col.UpdateMany(ctx, filter, update)
-
-	return err
-}
-
-func UpdateManyWithResult(ctx context.Context, collName string, filter interface{}, update interface{}) (*mongo.UpdateResult, error) {
-	col := db.Collection(collName)
-	return col.UpdateMany(ctx, filter, update)
+func EstimatedCount(ctx context.Context, collName string, opts ...*options.EstimatedDocumentCountOptions) (int64, error) {
+	return db.Collection(collName).EstimatedDocumentCount(ctx, opts...)
 }
 
 func Aggregate(ctx context.Context, req *AggregationRequest) error {
@@ -69,22 +30,22 @@ func Aggregate(ctx context.Context, req *AggregationRequest) error {
 	return err
 }
 
-func Find(ctx context.Context, collName string, models interface{}, filter interface{}, opts ...*options.FindOptions) error {
-	col := db.Collection(collName)
-
-	cur, err := col.Find(ctx, filter, opts...)
+//Flush, Clear all records of collection and return number of deleted records, use it carefully
+func Flush(ctx context.Context, collName string) (int64, error) {
+	result, err := db.Collection(collName).DeleteMany(ctx, bson.D{})
 	if err != nil {
-		return err
+		return 0, err
 	}
 
-	return cur.All(ctx, models)
+	return result.DeletedCount, err
 }
 
-//Flush, Clear all records of collection, use it carefully
-func Flush(ctx context.Context, collName string) error {
-	col := db.Collection(collName)
+func DoTransaction(ctx context.Context, cfg TransactionConfig) (interface{}, error) {
+	session, err := client.StartSession()
+	if err != nil {
+		return nil, err
+	}
+	defer session.EndSession(context.Background())
 
-	_, err := col.DeleteMany(ctx, bson.D{})
-
-	return err
+	return session.WithTransaction(ctx, cfg.Func, &cfg.Options)
 }

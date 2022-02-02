@@ -27,6 +27,11 @@ func Connect(ctx context.Context, cfg DbConfig) (*mongo.Client, error) {
 	return client, err
 }
 
+func Setup(database *mongo.Database) {
+	db = database
+	client = db.Client()
+}
+
 func RetrieveClient() *mongo.Client {
 	return client
 }

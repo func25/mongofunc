@@ -21,7 +21,7 @@ func TestUpdateHero_Set(t *testing.T) {
 		}),
 	)
 
-	if err := mongorely.UpdateMany(ctx, COLLECTION_NAME, filter, update); err != nil {
+	if _, err := mongorely.UpdateMany(ctx, COLLECTION_NAME, filter, update); err != nil {
 		t.Error("mongoquery Set failed 1", err)
 		return
 	}
@@ -44,7 +44,7 @@ func TestUpdateHero_Set(t *testing.T) {
 		}),
 	)
 
-	if err := mongorely.UpdateMany(ctx, COLLECTION_NAME, filter2, update2); err != nil {
+	if _, err := mongorely.UpdateMany(ctx, COLLECTION_NAME, filter2, update2); err != nil {
 		t.Error("mongoquery Set failed 4", err)
 		return
 	}
@@ -72,7 +72,7 @@ func TestUpdateHero_IncInt(t *testing.T) {
 		}),
 	)
 
-	if err := mongorely.UpdateMany(ctx, COLLECTION_NAME, filter, update); err != nil {
+	if _, err := mongorely.UpdateMany(ctx, COLLECTION_NAME, filter, update); err != nil {
 		t.Error("mongoquery Set failed 1", err)
 		return
 	}
@@ -95,7 +95,7 @@ func TestUpdateHero_IncInt(t *testing.T) {
 		}),
 	)
 
-	if err := mongorely.UpdateMany(ctx, COLLECTION_NAME, filter2, update2); err != nil {
+	if _, err := mongorely.UpdateMany(ctx, COLLECTION_NAME, filter2, update2); err != nil {
 		t.Error("mongoquery Set failed 4", err)
 		return
 	}
@@ -119,7 +119,7 @@ func TestUpdateHero_Push(t *testing.T) {
 		mongoquery.Push(mongoquery.PairSetter{FieldName: "skillIds", Value: 6}),
 	)
 
-	if err := mongorely.UpdateMany(ctx, COLLECTION_NAME, filter, update); err != nil {
+	if _, err := mongorely.UpdateMany(ctx, COLLECTION_NAME, filter, update); err != nil {
 		t.Error("mongoquery Set failed 1", err)
 		return
 	}

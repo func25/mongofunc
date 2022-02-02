@@ -13,7 +13,6 @@ type Hero struct {
 	Damage             int          `bson:"damage"`
 	SkillIds           []int        `bson:"skillIds"`
 	Omit               int          `bson:"omit,omitempty"`
-	NotOmit            int          `bson:"notomit"`
 	Subhero            map[int]Hero `bson:"subhero"`
 }
 
@@ -36,7 +35,7 @@ func init() {
 	}
 
 	if err := Clear(ctx); err != nil {
-		log.Fatal("cannot flush database")
+		log.Fatalln("cannot flush database", err)
 	}
 
 	if err := Seed(ctx, ROUND); err != nil {
@@ -53,7 +52,7 @@ func Seed(ctx context.Context, n int) error {
 			if i == n-1 {
 				x = 1
 			}
-			err := mongorely.Create(ctx, &Hero{
+			_, err := mongorely.Create(ctx, &Hero{
 				Name:     "Mongorely",
 				Damage:   i + 1,
 				SkillIds: []int{1, 2, 3, 4, 5},
@@ -69,5 +68,6 @@ func Seed(ctx context.Context, n int) error {
 }
 
 func Clear(ctx context.Context) error {
-	return mongorely.Flush(ctx, COLLECTION_NAME)
+	_, err := mongorely.Flush(ctx, COLLECTION_NAME)
+	return err
 }
