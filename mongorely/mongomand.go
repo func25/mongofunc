@@ -49,3 +49,13 @@ func DoTransaction(ctx context.Context, cfg TransactionConfig) (interface{}, err
 
 	return session.WithTransaction(ctx, cfg.Func, &cfg.Options)
 }
+
+func DoCustomTransaction(ctx context.Context, cfg CustomTransactionConfig) (interface{}, error) {
+	session, err := cfg.Client.StartSession()
+	if err != nil {
+		return nil, err
+	}
+	defer session.EndSession(context.Background())
+
+	return session.WithTransaction(ctx, cfg.Func, &cfg.Options)
+}

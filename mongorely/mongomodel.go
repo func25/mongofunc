@@ -55,3 +55,9 @@ type TransactionConfig struct {
 	Options options.TransactionOptions
 	Func    func(ctx mongo.SessionContext) (interface{}, error)
 }
+
+type CustomTransactionConfig struct {
+	Options options.TransactionOptions
+	Client  *mongo.Client
+	Func    func(ctx mongo.SessionContext) (interface{}, error)
+}
