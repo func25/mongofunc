@@ -52,12 +52,12 @@ func (cfg *DbConfig) ToConnectionString() string {
 
 // TransactionConfig, you can just define the func, the transaction options are not really need with simple application
 type TransactionConfig struct {
-	Options options.TransactionOptions
+	Options *options.TransactionOptions
 	Func    func(ctx mongo.SessionContext) (interface{}, error)
 }
 
 type CustomTransactionConfig struct {
-	Options options.TransactionOptions
+	Options *options.TransactionOptions
 	Client  *mongo.Client
 	Func    func(ctx mongo.SessionContext) (interface{}, error)
 }

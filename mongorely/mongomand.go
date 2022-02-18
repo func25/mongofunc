@@ -47,7 +47,7 @@ func DoTransaction(ctx context.Context, cfg TransactionConfig) (interface{}, err
 	}
 	defer session.EndSession(context.Background())
 
-	return session.WithTransaction(ctx, cfg.Func, &cfg.Options)
+	return session.WithTransaction(ctx, cfg.Func, cfg.Options)
 }
 
 func DoCustomTransaction(ctx context.Context, cfg CustomTransactionConfig) (interface{}, error) {
@@ -57,5 +57,5 @@ func DoCustomTransaction(ctx context.Context, cfg CustomTransactionConfig) (inte
 	}
 	defer session.EndSession(context.Background())
 
-	return session.WithTransaction(ctx, cfg.Func, &cfg.Options)
+	return session.WithTransaction(ctx, cfg.Func, cfg.Options)
 }
