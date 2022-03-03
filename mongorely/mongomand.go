@@ -2,6 +2,7 @@ package mongorely
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -43,6 +44,10 @@ func Flush(ctx context.Context, collName string) (int64, error) {
 func DoTransaction(ctx context.Context, cfg TransactionConfig) (interface{}, error) {
 	if cfg.Client == nil {
 		cfg.Client = client
+	}
+
+	if client == nil {
+		return nil, errors.New("client is nil, please using mongorely to create connection to mongo server or using your own client connection")
 	}
 
 	session, err := cfg.Client.StartSession()
