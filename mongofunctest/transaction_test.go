@@ -22,7 +22,7 @@ func TestTransactionSuccess(t *testing.T) {
 	ctx := context.Background()
 
 	_, err := mongorely.DoTransaction(ctx, mongorely.TransactionConfig{
-		Options: options.TransactionOptions{},
+		Options: &options.TransactionOptions{},
 		Func: func(ctx mongo.SessionContext) (interface{}, error) {
 			// update damage x to y
 			filter := mongoquery.Init(mongoquery.Equal("damage", x))
@@ -92,7 +92,7 @@ func TestTransactionFailed(t *testing.T) {
 	ctx := context.Background()
 
 	_, err := mongorely.DoTransaction(ctx, mongorely.TransactionConfig{
-		Options: options.TransactionOptions{},
+		Options: &options.TransactionOptions{},
 		Func: func(ctx mongo.SessionContext) (interface{}, error) {
 			// update damage x to y
 			filter := mongoquery.Init(mongoquery.Equal("damage", x))
