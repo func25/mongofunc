@@ -46,7 +46,7 @@ func DoTransaction(ctx context.Context, cfg TransactionConfig) (interface{}, err
 		cfg.Client = client
 	}
 
-	if client == nil {
+	if cfg.Client == nil {
 		return nil, errors.New("client is nil, please using mongorely to create connection to mongo server or using your own client connection")
 	}
 
