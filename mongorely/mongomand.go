@@ -41,16 +41,10 @@ func Flush(ctx context.Context, collName string) (int64, error) {
 }
 
 func DoTransaction(ctx context.Context, cfg TransactionConfig) (interface{}, error) {
-	session, err := client.StartSession()
-	if err != nil {
-		return nil, err
+	if cfg.Client == nil {
+		cfg.Client = client
 	}
-	defer session.EndSession(context.Background())
 
-	return session.WithTransaction(ctx, cfg.Func, cfg.Options)
-}
-
-func DoCustomTransaction(ctx context.Context, cfg CustomTransactionConfig) (interface{}, error) {
 	session, err := cfg.Client.StartSession()
 	if err != nil {
 		return nil, err

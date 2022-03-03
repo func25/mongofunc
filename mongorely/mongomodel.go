@@ -51,12 +51,8 @@ func (cfg *DbConfig) ToConnectionString() string {
 }
 
 // TransactionConfig, you can just define the func, the transaction options are not really need with simple application
+// You can pass your client if you're not using my mongorely client
 type TransactionConfig struct {
-	Options *options.TransactionOptions
-	Func    func(ctx mongo.SessionContext) (interface{}, error)
-}
-
-type CustomTransactionConfig struct {
 	Options *options.TransactionOptions
 	Client  *mongo.Client
 	Func    func(ctx mongo.SessionContext) (interface{}, error)
