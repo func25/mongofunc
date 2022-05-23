@@ -3,14 +3,24 @@ package mongoquery
 import "go.mongodb.org/mongo-driver/bson"
 
 const (
-	iNC  = "$inc"
-	sET  = "$set"
-	pUSH = "$push"
+	iNC   = "$inc"
+	sET   = "$set"
+	pUSH  = "$push"
+	uNSET = "$unset"
 )
 
 // SET
 func Set(pairs ...PairSetter) bson.E {
 	return bson.E{Key: sET, Value: toPair(pairs)}
+}
+
+// UNSET
+func Unset(keys ...string) bson.E {
+	res := bson.D{}
+	for i := range keys {
+		res = append(res, bson.E{Key: keys[i], Value: ""})
+	}
+	return bson.E{Key: uNSET, Value: res}
 }
 
 // INC
