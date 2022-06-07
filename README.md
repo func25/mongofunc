@@ -6,25 +6,25 @@ You can walkaround to find out more commands, but here are some
 
 You might using comparision queries like this:
 ```go
-filter := mongoquery.Init(
-  mongoquery.Equal("damage", 10),
-  mongoquery.EqualLess("health", 100),
-  mongoquery.Greater("speed", 20),
-  mongoquery.EqualGreaterTime("expired", time.Now())
+filter := moper.Init(
+  moper.Equal("damage", 10),
+  moper.EqualLess("health", 100),
+  moper.Greater("speed", 20),
+  moper.EqualGreaterTime("expired", time.Now())
 )
 ```
 
 Update commands:
 ```go
-filter := mongoquery.Init(
-  mongoquery.Equal("damage", 10),
+filter := moper.Init(
+  moper.Equal("damage", 10),
 )
-update := mongoquery.Init(
-  mongoquery.Set(mongoquery.PairSetter{
+update := moper.Init(
+  moper.Set(moper.PairSetter{
     FieldName: "damage",
     Value:     -10,
   }),
-  mongoquery.IncInt(mongoquery.PairSetterInt{
+  moper.IncInt(moper.PairSetterInt{
     FieldName: "health",
     Value:     3,
   }),
@@ -34,8 +34,8 @@ update := mongoquery.Init(
 ## Extra
 You can compare time like this:
 ```go
-filter := mongoquery.Init(
-  mongoquery.EqualGreaterTime("expired", time.Now())
+filter := moper.Init(
+  moper.EqualGreaterTime("expired", time.Now())
 )
 ```
 
