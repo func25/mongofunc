@@ -2,7 +2,6 @@ package mopertest
 
 import (
 	"context"
-	"fmt"
 	"testing"
 
 	"github.com/func25/mongofunc/mocom"
@@ -52,5 +51,5 @@ func TestAggregationTest(t *testing.T) {
 		return
 	}
 
-	fmt.Println(req.Result)
+	// fmt.Println(req.Result)
 }

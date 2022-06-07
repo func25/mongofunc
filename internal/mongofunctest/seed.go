@@ -16,7 +16,7 @@ type Hero struct {
 	Subhero            map[int]Hero `bson:"subhero"`
 }
 
-const COLLECTION_NAME = "Heroes"
+const COLLECTION_NAME = "Heroes1"
 
 var (
 	ROUND = 10
@@ -24,7 +24,7 @@ var (
 )
 
 func (*Hero) GetMongoCollName() string {
-	return "Heroes"
+	return COLLECTION_NAME
 }
 
 func init() {
