@@ -3,7 +3,6 @@ package mongorely
 import (
 	"context"
 	"errors"
-	"fmt"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -24,7 +23,7 @@ func Aggregate(ctx context.Context, req *AggregationRequest) error {
 	if err != nil {
 		return err
 	}
-	fmt.Println(cursor)
+	// fmt.Println(cursor)
 
 	err = cursor.All(ctx, &req.Result)
 

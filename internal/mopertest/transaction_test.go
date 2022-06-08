@@ -21,12 +21,12 @@ func TestTransactionSuccess(t *testing.T) {
 
 	ctx := context.Background()
 
-	_, err := mocom.DoTransaction(ctx, mocom.TransactionConfig{
+	_, err := mocom.Tx(ctx, mocom.TransactionConfig{
 		Options: &options.TransactionOptions{},
 		Func: func(ctx mongo.SessionContext) (interface{}, error) {
 			// update damage x to y
 			filter := moper.D{}.Equal("damage", x)
-			update := moper.D{}.Set(moper.P{"damage", y})
+			update := moper.D{}.Set(moper.P{K: "damage", V: y})
 
 			_, err := mocom.UpdateMany(ctx, COLLECTION_NAME, filter, update)
 			if err != nil {
@@ -91,12 +91,12 @@ func TestTransactionFailed(t *testing.T) {
 
 	ctx := context.Background()
 
-	_, err := mocom.DoTransaction(ctx, mocom.TransactionConfig{
+	_, err := mocom.Tx(ctx, mocom.TransactionConfig{
 		Options: &options.TransactionOptions{},
 		Func: func(ctx mongo.SessionContext) (interface{}, error) {
 			// update damage x to y
 			filter := moper.D{}.Equal("damage", x)
-			update := moper.D{}.Set(moper.P{"damage", y})
+			update := moper.D{}.Set(moper.P{K: "damage", V: y})
 
 			_, err := mocom.UpdateMany(ctx, COLLECTION_NAME, filter, update)
 			if err != nil {

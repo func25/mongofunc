@@ -23,7 +23,7 @@ var (
 	TOTAL = -1
 )
 
-func (*Hero) GetMongoCollName() string {
+func (*Hero) GetCollName() string {
 	return COLLECTION_NAME
 }
 

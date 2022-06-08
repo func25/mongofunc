@@ -23,15 +23,16 @@ var (
 	TOTAL = -1
 )
 
-func (*Hero) GetMongoCollName() string {
+func (*Hero) GetCollName() string {
 	return "Heroes"
 }
 
+// %s:%s/?w=majority&retryWrites=false
 func init() {
 	ctx := context.Background()
-	_, err := mocom.Connect(ctx, mocom.DefaultLocalDb())
+	_, err := mocom.Connect(ctx, "mongodb://localhost:27017/?w=majority&retryWrites=false", "defaultdb")
 	if err != nil {
-		log.Fatal("cannot connect mongo")
+		log.Fatal("cannot connect mongo", err)
 	}
 
 	if err := Clear(ctx); err != nil {

@@ -7,23 +7,17 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func DefaultLocalDb() DbConfig {
-	return DbConfig{
-		DbName:   "defaultdb",
-		UserName: "",
-		Password: "",
-		Host:     "localhost",
-		Port:     "27017",
-	}
-}
-
 var client *mongo.Client
 var db *mongo.Database
 
-func Connect(ctx context.Context, cfg DbConfig) (*mongo.Client, error) {
+//Connect mongodb://localhost:27017/?w=majority&retryWrites=false
+func Connect(ctx context.Context, uri string, dbName string) (*mongo.Client, error) {
 	var err error
-	client, err = mongo.Connect(ctx, options.Client().ApplyURI(cfg.ToConnectionString()))
-	db = client.Database(cfg.DbName)
+	client, err = mongo.Connect(ctx, options.Client().ApplyURI(uri))
+	if err != nil {
+		return nil, err
+	}
+	db = client.Database(dbName)
 	return client, err
 }
 
