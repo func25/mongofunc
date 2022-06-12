@@ -5,6 +5,7 @@ import (
 
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
 var client *mongo.Client
@@ -28,4 +29,12 @@ func Setup(database *mongo.Database) {
 
 func GetClient() *mongo.Client {
 	return client
+}
+
+func collRead(name string) *mongo.Collection {
+	return db.Collection(name, options.Collection().SetReadPreference(readpref.Nearest()))
+}
+
+func collWrite(name string) *mongo.Collection {
+	return db.Collection(name, options.Collection().SetReadPreference(readpref.Primary()))
 }

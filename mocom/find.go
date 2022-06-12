@@ -8,7 +8,7 @@ import (
 
 func Find[T MongoModel](ctx context.Context, filter interface{}, opts ...*options.FindOptions) (res []T, err error) {
 	var t T
-	cur, err := db.Collection(t.CollName()).Find(ctx, filter, opts...)
+	cur, err := collRead(t.CollName()).Find(ctx, filter, opts...)
 	if err != nil {
 		return res, err
 	}
@@ -19,7 +19,7 @@ func Find[T MongoModel](ctx context.Context, filter interface{}, opts ...*option
 
 func FindOne[T MongoModel](ctx context.Context, filter interface{}, opts ...*options.FindOneOptions) (res *T, err error) {
 	res = new(T)
-	cur := db.Collection((*res).CollName()).FindOne(ctx, filter, opts...)
+	cur := collRead((*res).CollName()).FindOne(ctx, filter, opts...)
 	err = cur.Decode(&res)
 	return res, err
 }

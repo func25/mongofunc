@@ -7,7 +7,7 @@ import (
 )
 
 func Create[T MongoModel](ctx context.Context, model *T, opts ...*options.InsertOneOptions) (interface{}, error) {
-	col := db.Collection((*model).CollName())
+	col := collWrite((*model).CollName())
 	if result, err := col.InsertOne(ctx, model, opts...); err != nil {
 		return nil, err
 	} else {

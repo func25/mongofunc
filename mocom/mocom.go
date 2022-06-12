@@ -14,12 +14,12 @@ import (
 
 func Count[T MongoModel](ctx context.Context, filter interface{}, opts ...*options.CountOptions) (int64, error) {
 	var t T
-	return db.Collection(t.CollName()).CountDocuments(ctx, filter, opts...)
+	return collRead(t.CollName()).CountDocuments(ctx, filter, opts...)
 }
 
 func EstimatedCount[T MongoModel](ctx context.Context, opts ...*options.EstimatedDocumentCountOptions) (int64, error) {
 	var t T
-	return db.Collection(t.CollName()).EstimatedDocumentCount(ctx, opts...)
+	return collRead(t.CollName()).EstimatedDocumentCount(ctx, opts...)
 }
 
 func Aggregate[T MongoModel](ctx context.Context, req *AggregationRequest[T]) error {
@@ -37,7 +37,7 @@ func Aggregate[T MongoModel](ctx context.Context, req *AggregationRequest[T]) er
 	return err
 }
 
-//Flush clears all records of collection and return number of deleted records, use it carefully
+//Flush clears all records of collection and return number of deleted records
 func Flush[T MongoModel](ctx context.Context) (int64, error) {
 	var t T
 	result, err := db.Collection(t.CollName()).DeleteMany(ctx, moper.D{})
