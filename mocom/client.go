@@ -26,6 +26,6 @@ func Setup(database *mongo.Database) {
 	client = db.Client()
 }
 
-func RetrieveClient() *mongo.Client {
+func GetClient() *mongo.Client {
 	return client
 }

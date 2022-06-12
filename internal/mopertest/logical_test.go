@@ -17,7 +17,7 @@ func TestOr(t *testing.T) {
 				moper.D{}.Equal("damage", i),
 				moper.D{}.Equal("damage", j),
 			)
-			if count, err := mocom.Count(ctx, COLLECTION_NAME, filter); err != nil {
+			if count, err := mocom.Count[Hero](ctx, filter); err != nil {
 				t.Error("[TestOr]", err)
 			} else if count != int64(i+j) {
 				t.Error("[TestOr]", count, "!=", int64(i+j))

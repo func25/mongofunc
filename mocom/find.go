@@ -6,16 +6,20 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func Find(ctx context.Context, collName string, models interface{}, filter interface{}, opts ...*options.FindOptions) error {
-	cur, err := db.Collection(collName).Find(ctx, filter, opts...)
+func Find[T MongoModel](ctx context.Context, filter interface{}, opts ...*options.FindOptions) (res []T, err error) {
+	var t T
+	cur, err := db.Collection(t.CollName()).Find(ctx, filter, opts...)
 	if err != nil {
-		return err
+		return res, err
 	}
 
-	return cur.All(ctx, models)
+	err = cur.All(ctx, &res)
+	return res, err
 }
 
-func FindOne(ctx context.Context, collName string, model interface{}, filter interface{}, opts ...*options.FindOneOptions) error {
-	cur := db.Collection(collName).FindOne(ctx, filter, opts...)
-	return cur.Decode(model)
+func FindOne[T MongoModel](ctx context.Context, filter interface{}, opts ...*options.FindOneOptions) (res *T, err error) {
+	res = new(T)
+	cur := db.Collection((*res).CollName()).FindOne(ctx, filter, opts...)
+	err = cur.Decode(&res)
+	return res, err
 }

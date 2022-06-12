@@ -23,7 +23,7 @@ var (
 	TOTAL = -1
 )
 
-func (*Hero) GetCollName() string {
+func (*Hero) CollName() string {
 	return COLLECTION_NAME
 }
 

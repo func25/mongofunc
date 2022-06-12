@@ -9,7 +9,7 @@ import (
 )
 
 type MongoModel interface {
-	GetCollName() string
+	CollName() string
 }
 
 type DbConfig struct {

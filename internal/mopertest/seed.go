@@ -6,14 +6,15 @@ import (
 	"strconv"
 
 	"github.com/func25/mongofunc/mocom"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type Hero struct {
-	mocom.ObjectId `bson:",inline"`
-	Name           string `bson:"name"`
-	Damage         int    `bson:"damage"`
-	SkillIds       []int  `bson:"skillIds"`
-	Omit           bool   `bson:"omit,omitempty"`
+	mocom.ID[primitive.ObjectID] `bson:",inline"`
+	Name                         string `bson:"name"`
+	Damage                       int    `bson:"damage"`
+	SkillIds                     []int  `bson:"skillIds"`
+	Omit                         bool   `bson:"omit,omitempty"`
 }
 
 const COLLECTION_NAME = "Heroes"
@@ -23,7 +24,7 @@ var (
 	TOTAL = -1
 )
 
-func (*Hero) GetCollName() string {
+func (Hero) CollName() string {
 	return "Heroes"
 }
 
@@ -68,6 +69,6 @@ func Seed(ctx context.Context, n int) error {
 }
 
 func Clear(ctx context.Context) error {
-	_, err := mocom.Flush(ctx, COLLECTION_NAME)
+	_, err := mocom.Flush[Hero](ctx)
 	return err
 }
