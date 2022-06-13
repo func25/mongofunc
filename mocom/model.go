@@ -1,22 +1,30 @@
 package mocom
 
 import (
-	"go.mongodb.org/mongo-driver/bson"
+	"github.com/func25/mongofunc/moper"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-type MongoModel interface {
+type Model interface {
 	CollName() string
 }
 
-type ID[T any] struct {
-	ID T `json:"id" bson:"_id,omitempty"`
+type IDModel interface {
+	Model
+	SetID(t interface{})
 }
 
-type AggregationRequest[T MongoModel] struct {
-	Result   []bson.M
-	Pipeline mongo.Pipeline
+type ID struct {
+	ID interface{} `json:"id" bson:"_id,omitempty"`
+}
+
+func (id *ID) SetID(t interface{}) {
+	id.ID = t
+}
+
+type AggregationRequest[T Model] struct {
+	Pipeline []moper.D
 	Options  []*options.AggregateOptions
 }
 

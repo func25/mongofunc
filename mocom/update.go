@@ -7,12 +7,12 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func UpdateOne[T MongoModel](ctx context.Context, filter interface{}, update interface{}, opts ...*options.UpdateOptions) (*mongo.UpdateResult, error) {
+func UpdateOne[T Model](ctx context.Context, filter interface{}, update interface{}, opts ...*options.UpdateOptions) (*mongo.UpdateResult, error) {
 	var t T
 	return collWrite(t.CollName()).UpdateOne(ctx, filter, update, opts...)
 }
 
-func UpdateAndReturn[T MongoModel](ctx context.Context, filter interface{}, update interface{}, opts ...*options.FindOneAndUpdateOptions) (ptrT *T, err error) {
+func UpdateAndReturn[T Model](ctx context.Context, filter interface{}, update interface{}, opts ...*options.FindOneAndUpdateOptions) (ptrT *T, err error) {
 	ptrT = new(T)
 	res := collWrite((*ptrT).CollName()).FindOneAndUpdate(ctx, filter, update, opts...)
 
@@ -24,7 +24,7 @@ func UpdateAndReturn[T MongoModel](ctx context.Context, filter interface{}, upda
 	return
 }
 
-func UpdateMany[T MongoModel](ctx context.Context, filter interface{}, update interface{}) (*mongo.UpdateResult, error) {
+func UpdateMany[T Model](ctx context.Context, filter interface{}, update interface{}) (*mongo.UpdateResult, error) {
 	var t T
 	return collWrite(t.CollName()).UpdateMany(ctx, filter, update)
 }

@@ -10,7 +10,6 @@ import (
 
 func TestExists(t *testing.T) {
 	ctx := context.Background()
-
 	filter := moper.D{}.Exists("omit", true)
 	if count, err := mocom.Count[Hero](ctx, filter); err != nil {
 		t.Error("[TestExists]", err)
