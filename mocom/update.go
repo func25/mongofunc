@@ -24,7 +24,7 @@ func UpdateAndReturn[T Model](ctx context.Context, filter interface{}, update in
 	return
 }
 
-func UpdateMany[T Model](ctx context.Context, filter interface{}, update interface{}) (*mongo.UpdateResult, error) {
+func UpdateMany[T Model](ctx context.Context, filter interface{}, update interface{}, opts ...*options.UpdateOptions) (*mongo.UpdateResult, error) {
 	var t T
-	return collWrite(t.CollName()).UpdateMany(ctx, filter, update)
+	return collWrite(t.CollName()).UpdateMany(ctx, filter, update, opts...)
 }

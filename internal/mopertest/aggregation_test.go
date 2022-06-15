@@ -37,6 +37,7 @@ func TestAggregation(t *testing.T) {
 
 	if int(result[0]["total"].(int32)) != expect {
 		t.Error("wrong result", result[0]["total"], expect)
+		return
 	}
 }
 
