@@ -31,8 +31,18 @@ func GetClient() *mongo.Client {
 	return client
 }
 
+func CollRead[T Model]() *mongo.Collection {
+	var t T
+	return collRead(t.CollName())
+}
+
 func collRead(name string) *mongo.Collection {
 	return db.Collection(name, options.Collection().SetReadPreference(readpref.Nearest()))
+}
+
+func CollWrite[T Model]() *mongo.Collection {
+	var t T
+	return collWrite(t.CollName())
 }
 
 func collWrite(name string) *mongo.Collection {
