@@ -3,6 +3,7 @@ package mocom
 import (
 	"context"
 
+	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
@@ -23,4 +24,16 @@ func CreateWithID[T IDModel](ctx context.Context, model T, opts ...*options.Inse
 		model.SetID(result.InsertedID)
 		return nil
 	}
+}
+
+func CreateMany[T Model](ctx context.Context, models []T, opts ...*options.InsertManyOptions) (*mongo.InsertManyResult, error) {
+	var t T
+	col := collWrite(t.CollName())
+
+	m := make([]interface{}, len(models))
+	for i := range models {
+		m[i] = models[i]
+	}
+
+	return col.InsertMany(ctx, m, opts...)
 }
