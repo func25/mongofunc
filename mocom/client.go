@@ -8,22 +8,27 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
-var client *mongo.Client
-var db *mongo.Database
+// mocom only support one client, one database for now
+var client *mongo.Client // default client
+var db Database          // default database
 
-//Connect mongodb://localhost:27017/?w=majority&retryWrites=false
+type Database struct {
+	*mongo.Database
+}
+
+// Connect mongodb://localhost:27017/?w=majority&retryWrites=false
 func Connect(ctx context.Context, uri string, dbName string) (*mongo.Client, error) {
 	var err error
 	client, err = mongo.Connect(ctx, options.Client().ApplyURI(uri))
 	if err != nil {
 		return nil, err
 	}
-	db = client.Database(dbName)
+	db.Database = client.Database(dbName)
 	return client, err
 }
 
 func Setup(database *mongo.Database) {
-	db = database
+	db.Database = database
 	client = db.Client()
 }
 
@@ -31,20 +36,18 @@ func GetClient() *mongo.Client {
 	return client
 }
 
-func CollRead[T Model]() *mongo.Collection {
-	var t T
-	return collRead(t.CollName())
+func CollRead(collName string) *mongo.Collection {
+	return db.CollRead(collName)
 }
 
-func collRead(name string) *mongo.Collection {
-	return db.Collection(name, options.Collection().SetReadPreference(readpref.Nearest()))
+func (db Database) CollRead(collName string) *mongo.Collection {
+	return db.Collection(collName, options.Collection().SetReadPreference(readpref.Nearest()))
 }
 
-func CollWrite[T Model]() *mongo.Collection {
-	var t T
-	return collWrite(t.CollName())
+func CollWrite(collName string) *mongo.Collection {
+	return db.CollWrite(collName)
 }
 
-func collWrite(name string) *mongo.Collection {
-	return db.Collection(name, options.Collection().SetReadPreference(readpref.Primary()))
+func (db Database) CollWrite(collName string) *mongo.Collection {
+	return db.Collection(collName, options.Collection().SetReadPreference(readpref.Primary()))
 }

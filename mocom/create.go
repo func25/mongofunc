@@ -7,8 +7,12 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
+// type Ptr[T any] interface {
+// 	*T
+// }
+
 func Create[T Model](ctx context.Context, model T, opts ...*options.InsertOneOptions) (interface{}, error) {
-	col := collWrite(model.CollName())
+	col := CollWrite(model.CollName())
 	if result, err := col.InsertOne(ctx, model, opts...); err != nil {
 		return nil, err
 	} else {
@@ -17,7 +21,7 @@ func Create[T Model](ctx context.Context, model T, opts ...*options.InsertOneOpt
 }
 
 func CreateWithID[T IDModel](ctx context.Context, model T, opts ...*options.InsertOneOptions) error {
-	col := collWrite(model.CollName())
+	col := CollWrite(model.CollName())
 	if result, err := col.InsertOne(ctx, model, opts...); err != nil {
 		return err
 	} else {
@@ -27,8 +31,11 @@ func CreateWithID[T IDModel](ctx context.Context, model T, opts ...*options.Inse
 }
 
 func CreateMany[T Model](ctx context.Context, models []T, opts ...*options.InsertManyOptions) (*mongo.InsertManyResult, error) {
-	var t T
-	col := collWrite(t.CollName())
+	if len(models) == 0 {
+		return &mongo.InsertManyResult{}, nil
+	}
+
+	col := CollWrite(models[0].CollName())
 
 	m := make([]interface{}, len(models))
 	for i := range models {

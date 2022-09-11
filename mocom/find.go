@@ -8,7 +8,7 @@ import (
 
 func FindMany[T Model](ctx context.Context, filter interface{}, opts ...*options.FindOptions) (res []T, err error) {
 	var t T
-	cur, err := collRead(t.CollName()).Find(ctx, filter, opts...)
+	cur, err := CollRead(t.CollName()).Find(ctx, filter, opts...)
 	if err != nil {
 		return res, err
 	}
@@ -19,7 +19,8 @@ func FindMany[T Model](ctx context.Context, filter interface{}, opts ...*options
 
 func Find[T Model](ctx context.Context, filter interface{}, opts ...*options.FindOneOptions) (res *T, err error) {
 	res = new(T)
-	cur := collRead((*res).CollName()).FindOne(ctx, filter, opts...)
+	var t T
+	cur := CollRead(t.CollName()).FindOne(ctx, filter, opts...)
 	err = cur.Decode(&res)
 	return res, err
 }

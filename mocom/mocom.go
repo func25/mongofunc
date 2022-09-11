@@ -16,12 +16,12 @@ import (
 
 func Count[T Model](ctx context.Context, filter interface{}, opts ...*options.CountOptions) (int64, error) {
 	var t T
-	return collRead(t.CollName()).CountDocuments(ctx, filter, opts...)
+	return CollRead(t.CollName()).CountDocuments(ctx, filter, opts...)
 }
 
 func EstimatedCount[T Model](ctx context.Context, opts ...*options.EstimatedDocumentCountOptions) (int64, error) {
 	var t T
-	return collRead(t.CollName()).EstimatedDocumentCount(ctx, opts...)
+	return CollRead(t.CollName()).EstimatedDocumentCount(ctx, opts...)
 }
 
 func Aggregate[T Model](ctx context.Context, req *AggregationRequest[T]) (res []bson.M, err error) {
@@ -37,7 +37,7 @@ func Aggregate[T Model](ctx context.Context, req *AggregationRequest[T]) (res []
 	return res, err
 }
 
-//Flush clears all records of collection and return number of deleted records
+// Flush clears all records of collection and return number of deleted records
 func Flush[T Model](ctx context.Context) (int64, error) {
 	var t T
 	result, err := db.Collection(t.CollName()).DeleteMany(ctx, moper.D{})
@@ -48,7 +48,7 @@ func Flush[T Model](ctx context.Context) (int64, error) {
 	return result.DeletedCount, err
 }
 
-//Tx -> transaction
+// Tx -> transaction
 func Tx(ctx context.Context, cfg TransactionConfig) (interface{}, error) {
 	if client == nil {
 		return nil, errors.New("client is nil, please using mocom to create connection to mongo server or using your own client connection")

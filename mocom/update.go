@@ -9,12 +9,12 @@ import (
 
 func UpdateOne[T Model](ctx context.Context, filter interface{}, update interface{}, opts ...*options.UpdateOptions) (*mongo.UpdateResult, error) {
 	var t T
-	return collWrite(t.CollName()).UpdateOne(ctx, filter, update, opts...)
+	return CollWrite(t.CollName()).UpdateOne(ctx, filter, update, opts...)
 }
 
 func UpdateAndReturn[T Model](ctx context.Context, filter interface{}, update interface{}, opts ...*options.FindOneAndUpdateOptions) (ptrT *T, err error) {
-	ptrT = new(T)
-	res := collWrite((*ptrT).CollName()).FindOneAndUpdate(ctx, filter, update, opts...)
+	var t T
+	res := CollWrite(t.CollName()).FindOneAndUpdate(ctx, filter, update, opts...)
 
 	err = res.Decode(ptrT)
 	if err != nil {
@@ -26,5 +26,5 @@ func UpdateAndReturn[T Model](ctx context.Context, filter interface{}, update in
 
 func UpdateMany[T Model](ctx context.Context, filter interface{}, update interface{}, opts ...*options.UpdateOptions) (*mongo.UpdateResult, error) {
 	var t T
-	return collWrite(t.CollName()).UpdateMany(ctx, filter, update, opts...)
+	return CollWrite(t.CollName()).UpdateMany(ctx, filter, update, opts...)
 }
