@@ -40,7 +40,7 @@ func Aggregate[T Model](ctx context.Context, req *AggregationRequest[T]) (res []
 // Flush clears all records of collection and return number of deleted records
 func Flush[T Model](ctx context.Context) (int64, error) {
 	var t T
-	result, err := db.Collection(t.CollName()).DeleteMany(ctx, moper.D{})
+	result, err := db.Collection(t.CollName()).DeleteMany(ctx, moper.NewD())
 	if err != nil {
 		return 0, err
 	}

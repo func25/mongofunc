@@ -14,10 +14,10 @@ func TestSet(t *testing.T) {
 
 	// change all damages to negative
 	for i := 1; i <= ROUND; i++ {
-		filter := moper.D{}.Equal("damage", i)
-		update := moper.D{}.Set(moper.P{K: "damage", V: -i})
+		filter := moper.NewD().Equal("damage", i)
+		update := moper.NewD().Set(moper.P{K: "damage", V: -i})
 
-		result, err := mocom.UpdateMany[Hero](ctx, filter, bson.D(update))
+		result, err := mocom.UpdateMany[Hero](ctx, filter, bson.D(*update))
 		if err != nil {
 			t.Error("[TestSet]", err)
 			return
@@ -31,8 +31,8 @@ func TestSet(t *testing.T) {
 
 	// change damages to positive
 	for i := 1; i <= ROUND; i++ {
-		filter := moper.D{}.Equal("damage", -i)
-		update := moper.D{}.Set(moper.P{K: "damage", V: i})
+		filter := moper.NewD().Equal("damage", -i)
+		update := moper.NewD().Set(moper.P{K: "damage", V: i})
 
 		result, err := mocom.UpdateMany[Hero](ctx, filter, update)
 		if err != nil {
@@ -50,9 +50,9 @@ func TestSet(t *testing.T) {
 func TestInc(t *testing.T) {
 	ctx := context.Background()
 	for i := ROUND; i >= 0; i-- {
-		filter := moper.D{}.Equal("damage", i)
+		filter := moper.NewD().Equal("damage", i)
 
-		update := moper.D{}.Inc(moper.P{K: "damage", V: i})
+		update := moper.NewD().Inc(moper.P{K: "damage", V: i})
 
 		result, err := mocom.UpdateMany[Hero](ctx, filter, update)
 		if err != nil {
@@ -67,8 +67,8 @@ func TestInc(t *testing.T) {
 	}
 
 	for i := 1; i <= ROUND; i++ {
-		filter := moper.D{}.Equal("damage", i*2)
-		update := moper.D{}.Inc(moper.P{
+		filter := moper.NewD().Equal("damage", i*2)
+		update := moper.NewD().Inc(moper.P{
 			K: "damage",
 			V: -i,
 		})
@@ -89,8 +89,8 @@ func TestInc(t *testing.T) {
 func TestPush(t *testing.T) {
 	ctx := context.Background()
 
-	filter := moper.D{}.Equal("damage", ROUND)
-	update := moper.D{}.Push(moper.P{K: "skillIds", V: 6})
+	filter := moper.NewD().Equal("damage", ROUND)
+	update := moper.NewD().Push(moper.P{K: "skillIds", V: 6})
 
 	result, err := mocom.UpdateMany[Hero](ctx, filter, update)
 	if err != nil {
@@ -98,7 +98,7 @@ func TestPush(t *testing.T) {
 		return
 	}
 
-	filter2 := moper.D{}.Equal("skillIds", []int{1, 2, 3, 4, 5, 6})
+	filter2 := moper.NewD().Equal("skillIds", []int{1, 2, 3, 4, 5, 6})
 
 	if count, err := mocom.Count[Hero](ctx, filter2); err != nil {
 		t.Error("[TestPush]", err)

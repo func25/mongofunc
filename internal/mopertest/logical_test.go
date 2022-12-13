@@ -13,9 +13,9 @@ func TestOr(t *testing.T) {
 
 	for i := 1; i < ROUND; i++ {
 		for j := i + 1; j <= ROUND; j++ {
-			filter := moper.D{}.Or(
-				moper.D{}.Equal("damage", i),
-				moper.D{}.Equal("damage", j),
+			filter := moper.NewD().Or(
+				*moper.NewD().Equal("damage", i),
+				*moper.NewD().Equal("damage", j),
 			)
 			if count, err := mocom.Count[Hero](ctx, filter); err != nil {
 				t.Error("[TestOr]", err)

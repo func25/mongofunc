@@ -26,7 +26,7 @@ You can walkaround to find out more commands, but here are some
 
 #### You might using comparision queries like this:
 ```go
-filter := moper.D{}.
+filter := moper.NewD().
 	Equal("damage", 10).
 	EqualLess("health", 100).
 	Greater("speed", 20.1)
@@ -41,7 +41,7 @@ filter := moper.Init(
 
 #### Update commands
 ```go
-update := moper.D{}.Set(
+update := moper.NewD().Set(
 	moper.P{"damage", 10},
 	moper.P{"health", 1},
 ).Inc(
@@ -53,10 +53,10 @@ Support simple aggregation:
 ```go
 intArr := []int{1, 2, 3, 4, 5, 6, 7, 8, 9}
 
-matchStage := moper.D{}.MatchD(moper.D{}.InArray("damage", intArr))
-groupStage := moper.D{}.Group(
+matchStage := moper.NewD().MatchD(moper.NewD().InArray("damage", intArr))
+groupStage := moper.NewD().Group(
 	moper.P{K: "_id", V: nil},
-	moper.P{K: "total", V: moper.D{}.Sum("damage")},
+	moper.P{K: "total", V: moper.NewD().Sum("damage")},
 )
 
 req := &mocom.AggregationRequest[Hero]{
@@ -92,8 +92,8 @@ type Model interface {
 }
 
 // Hero is Model
-filter := moper.D{}.Equal("damage", -i)
-update := moper.D{}.Set(moper.P{K: "damage", V: i})
+filter := moper.NewD().Equal("damage", -i)
+update := moper.NewD().Set(moper.P{K: "damage", V: i})
 
 result, err := mocom.UpdateMany[Hero](ctx, filter, update)
 ```

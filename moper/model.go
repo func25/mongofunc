@@ -7,10 +7,14 @@ import (
 
 type D primitive.D
 
-//P is pair
+// P is pair
 type P struct {
 	K string
 	V interface{}
+}
+
+func NewD() *D {
+	return &D{}
 }
 
 func (d D) MarshalBSON() ([]byte, error) {

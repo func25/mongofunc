@@ -24,7 +24,7 @@ func (id *ID) SetID(t interface{}) {
 }
 
 type AggregationRequest[T Model] struct {
-	Pipeline []moper.D
+	Pipeline []*moper.D
 	Options  []*options.AggregateOptions
 }
 

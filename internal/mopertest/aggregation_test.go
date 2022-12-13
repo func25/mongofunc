@@ -14,14 +14,14 @@ import (
 func TestAggregation(t *testing.T) {
 	intArr := []int{1, 2, 3, 4, 5, 6, 7, 8, 9}
 
-	matchStage := moper.D{}.MatchD(moper.D{}.InArray("damage", intArr))
-	groupStage := moper.D{}.Group(
+	matchStage := moper.NewD().MatchD(*moper.NewD().InArray("damage", intArr))
+	groupStage := moper.NewD().Group(
 		moper.P{K: "_id", V: nil},
-		moper.P{K: "total", V: moper.D{}.Sum("damage")},
+		moper.P{K: "total", V: moper.NewD().Sum("damage")},
 	)
 
 	req := &mocom.AggregationRequest[Hero]{
-		Pipeline: []moper.D{matchStage, groupStage},
+		Pipeline: []*moper.D{matchStage, groupStage},
 		Options:  []*options.AggregateOptions{},
 	}
 	result, err := mocom.Aggregate(context.Background(), req)
@@ -43,18 +43,18 @@ func TestAggregation(t *testing.T) {
 
 func TestLookup(t *testing.T) {
 	intArr := []int{1}
-	matchStage := moper.D{}.MatchD(moper.D{}.InArray("damage", intArr))
+	matchStage := moper.NewD().MatchD(*moper.NewD().InArray("damage", intArr))
 
-	lookupStage := moper.D{}.LookUp().
+	lookupStage := moper.NewD().LookUp().
 		From(Weapon{}.CollName()).
 		LocalField("damage").
 		ForeignField("damage").
 		As("weapon")
 
-	unwindStage := moper.D{}.Equal("$unwind", moper.D{}.Equal("path", "$weapon").Equal("preserveNullAndEmptyArrays", false))
+	unwindStage := moper.NewD().Equal("$unwind", moper.NewD().Equal("path", "$weapon").Equal("preserveNullAndEmptyArrays", false))
 
 	req := &mocom.AggregationRequest[Hero]{
-		Pipeline: []moper.D{matchStage, lookupStage.D(), unwindStage},
+		Pipeline: []*moper.D{matchStage, lookupStage.D(), unwindStage},
 		Options:  []*options.AggregateOptions{},
 	}
 	result, err := mocom.Aggregate(context.Background(), req)

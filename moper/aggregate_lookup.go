@@ -1,7 +1,7 @@
 package moper
 
 type LU struct {
-	d D
+	d *D
 }
 
 // Specifies the foreign collection in the same database to join to the local collection.
@@ -29,8 +29,8 @@ func (l *LU) Custom(p P) *LU {
 	return l
 }
 
-func (l *LU) D() D {
-	return D{}.Equal("$lookup", l.d)
+func (l *LU) D() *D {
+	return NewD().Equal("$lookup", l.d)
 }
 
 // Optional, Specifies the variables to use in the pipeline stages.
@@ -45,6 +45,6 @@ func (l *LU) As(field string) *LU {
 	return l
 }
 
-func (d D) LookUp() *LU {
+func (d *D) LookUp() *LU {
 	return &LU{d: d}
 }
