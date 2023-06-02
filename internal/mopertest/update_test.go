@@ -6,7 +6,6 @@ import (
 
 	"github.com/func25/mongofunc/mocom"
 	"github.com/func25/mongofunc/moper"
-	"go.mongodb.org/mongo-driver/bson"
 )
 
 func TestSet(t *testing.T) {
@@ -17,7 +16,7 @@ func TestSet(t *testing.T) {
 		filter := moper.NewD().Equal("damage", i)
 		update := moper.NewD().Set(moper.P{K: "damage", V: -i})
 
-		result, err := mocom.UpdateMany[Hero](ctx, filter, bson.D(*update))
+		result, err := mocom.UpdateMany[Hero](ctx, filter, update)
 		if err != nil {
 			t.Error("[TestSet]", err)
 			return
