@@ -8,7 +8,7 @@ import (
 )
 
 // REPLACE
-func ReplaceOne[T Model](ctx context.Context, filter interface{}, update interface{}, opts ...*options.ReplaceOptions) (*mongo.UpdateResult, error) {
+func ReplaceOne[T Model](ctx context.Context, filter interface{}, model interface{}, opts ...*options.ReplaceOptions) (*mongo.UpdateResult, error) {
 	var t T
-	return CollWrite(t.CollName()).ReplaceOne(ctx, filter, update, opts...)
+	return CollWrite(t.CollName()).ReplaceOne(ctx, filter, model, opts...)
 }
