@@ -13,21 +13,25 @@ import (
 
 func Create[T Model](ctx context.Context, model T, opts ...*options.InsertOneOptions) (interface{}, error) {
 	col := CollWrite(model.CollName())
-	if result, err := col.InsertOne(ctx, model, opts...); err != nil {
+
+	result, err := col.InsertOne(ctx, model, opts...)
+	if err != nil {
 		return nil, err
-	} else {
-		return result.InsertedID, nil
 	}
+
+	return result.InsertedID, nil
 }
 
 func CreateWithID[T IDModel](ctx context.Context, model T, opts ...*options.InsertOneOptions) error {
 	col := CollWrite(model.CollName())
-	if result, err := col.InsertOne(ctx, model, opts...); err != nil {
+
+	result, err := col.InsertOne(ctx, model, opts...)
+	if err != nil {
 		return err
-	} else {
-		model.SetID(result.InsertedID)
-		return nil
 	}
+
+	model.SetID(result.InsertedID)
+	return nil
 }
 
 func CreateMany[T Model](ctx context.Context, models []T, opts ...*options.InsertManyOptions) (*mongo.InsertManyResult, error) {
