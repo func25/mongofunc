@@ -4,6 +4,7 @@ import (
 	"context"
 	"log"
 	"strconv"
+	"time"
 
 	"github.com/func25/mongofunc/mocom"
 )
@@ -40,8 +41,8 @@ func (Hero) CollName() string {
 
 // %s:%s/?w=majority&retryWrites=false
 func init() {
-	ctx := context.Background()
-	_, err := mocom.Connect(ctx, "mongodb://localhost:27017/?w=majority&retryWrites=false", "defaultdb")
+	ctx, _ := context.WithTimeout(context.Background(), 3*time.Second)
+	err := mocom.Connect(ctx, "mongodb://localhost:27017/?w=majority&retryWrites=false", "defaultdb")
 	if err != nil {
 		log.Fatal("cannot connect mongo", err)
 	}
@@ -57,7 +58,7 @@ func init() {
 	TOTAL = ROUND * (ROUND + 1) / 2
 }
 
-//Seed create 1 hero has 1 damage, 2 heroes have 2 damages,... until n (n == 10)
+// Seed create 1 hero has 1 damage, 2 heroes have 2 damages,... until n (n == 10)
 func Seed(ctx context.Context, n int) error {
 	count := 0
 	weapons := []*Weapon{}
@@ -93,6 +94,9 @@ func Seed(ctx context.Context, n int) error {
 
 func Clear(ctx context.Context) error {
 	_, err := mocom.Flush[Hero](ctx)
+	if err != nil {
+		return err
+	}
 	_, err = mocom.Flush[Weapon](ctx)
 	return err
 }

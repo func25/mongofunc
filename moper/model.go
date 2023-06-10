@@ -13,8 +13,8 @@ type P struct {
 	V interface{}
 }
 
-func NewD() *D {
-	return &D{}
+func Query() D {
+	return D{}
 }
 
 func (d D) MarshalBSON() ([]byte, error) {

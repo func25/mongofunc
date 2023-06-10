@@ -5,6 +5,7 @@ import (
 	"errors"
 	"strconv"
 	"testing"
+	"time"
 
 	"github.com/func25/mongofunc/mocom"
 	"github.com/func25/mongofunc/moper"
@@ -13,33 +14,28 @@ import (
 )
 
 func TestTransactionSuccess(t *testing.T) {
-	return
+	ctx := context.Background()
 	x := 2
 	y := 3
 	z := 4
 
-	ctx := context.Background()
-
 	_, err := mocom.Tx(ctx, mocom.TransactionConfig{
 		Options: &options.TransactionOptions{},
 		Func: func(ctx mongo.SessionContext) (interface{}, error) {
-			// update damage x to y
-			filter := moper.NewD().Equal("damage", x)
-			update := moper.NewD().Set(moper.P{K: "damage", V: y})
+			filter := moper.Query().Equal("damage", x)
+			update := moper.Query().Set(moper.P{K: "damage", V: y})
 
 			_, err := mocom.UpdateMany[Hero](ctx, filter, update)
 			if err != nil {
-				t.Error(err)
 				return nil, err
 			}
 
 			// update damage y to z
-			filter2 := moper.NewD().Equal("damage", y)
-			update2 := moper.NewD().Set(moper.P{K: "damage", V: z})
+			filter2 := moper.Query().Equal("damage", y)
+			update2 := moper.Query().Set(moper.P{K: "damage", V: z})
 
 			result2, err := mocom.UpdateMany[Hero](ctx, filter2, update2)
 			if err != nil {
-				t.Error(err)
 				return nil, err
 			}
 
@@ -48,11 +44,11 @@ func TestTransactionSuccess(t *testing.T) {
 	})
 
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	// get all hero has damage x or y
-	filter := moper.NewD().InEll("damage", x, y)
+	filter := moper.Query().InEll("damage", x, y)
 	count, err := mocom.Count[Hero](ctx, filter)
 	if err != nil {
 		t.Error(err)
@@ -61,7 +57,7 @@ func TestTransactionSuccess(t *testing.T) {
 	}
 
 	// get all hero has damage z
-	filter = moper.NewD().Equal("damage", z)
+	filter = moper.Query().Equal("damage", z)
 	count, err = mocom.Count[Hero](ctx, filter)
 	if err != nil {
 		t.Error(err)
@@ -73,8 +69,70 @@ func TestTransactionSuccess(t *testing.T) {
 	Seed(ctx, ROUND)
 }
 
+func TestNestedTransactionSuccess(t *testing.T) {
+	ctx := context.Background()
+	x := 2
+	y := 3
+	z := 4
+
+	_, err := mocom.Tx(ctx, mocom.TransactionConfig{
+		Options: &options.TransactionOptions{},
+		Func: func(ctx mongo.SessionContext) (interface{}, error) {
+			return NestedTransaction(ctx, x, y, z)
+		},
+	})
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// get all hero has damage x or y
+	filter := moper.Query().InEll("damage", x, y)
+	count, err := mocom.Count[Hero](ctx, filter)
+	if err != nil {
+		t.Error(err)
+	} else if count != 0 {
+		t.Error(errors.New("Transaction was operated wrong with count 1:" + strconv.Itoa(int(count))))
+	}
+
+	// get all hero has damage z
+	filter = moper.Query().Equal("damage", z)
+	count, err = mocom.Count[Hero](ctx, filter)
+	if err != nil {
+		t.Error(err)
+	} else if int(count) != x+y+z {
+		t.Error(errors.New("Transaction was operated wrong with count 2:" + strconv.Itoa(int(count))))
+	}
+
+	Clear(ctx)
+	Seed(ctx, ROUND)
+}
+
+func NestedTransaction(ctx context.Context, x, y, z int) (any, error) {
+	ctx, _ = context.WithTimeout(ctx, 5*time.Second)
+	return mocom.TxOptimal(ctx, func(ctx mongo.SessionContext) (interface{}, error) {
+		filter := moper.Query().Equal("damage", x)
+		update := moper.Query().Set(moper.P{K: "damage", V: y})
+
+		_, err := mocom.UpdateMany[Hero](ctx, filter, update)
+		if err != nil {
+			return nil, err
+		}
+
+		// update damage y to z
+		filter2 := moper.Query().Equal("damage", y)
+		update2 := moper.Query().Set(moper.P{K: "damage", V: z})
+
+		result2, err := mocom.UpdateMany[Hero](ctx, filter2, update2)
+		if err != nil {
+			return nil, err
+		}
+
+		return result2, nil
+	})
+}
+
 func TestTransactionFailed(t *testing.T) {
-	return
 	x := 2
 	y := 3
 	z := 4
@@ -85,8 +143,8 @@ func TestTransactionFailed(t *testing.T) {
 		Options: &options.TransactionOptions{},
 		Func: func(ctx mongo.SessionContext) (interface{}, error) {
 			// update damage x to y
-			filter := moper.NewD().Equal("damage", x)
-			update := moper.NewD().Set(moper.P{K: "damage", V: y})
+			filter := moper.Query().Equal("damage", x)
+			update := moper.Query().Set(moper.P{K: "damage", V: y})
 
 			_, err := mocom.UpdateMany[Hero](ctx, filter, update)
 			if err != nil {
@@ -95,8 +153,8 @@ func TestTransactionFailed(t *testing.T) {
 			}
 
 			// update damage y to z
-			filter2 := moper.NewD().Equal("damage", y)
-			update2 := moper.NewD().Set(moper.P{K: "damage", V: z})
+			filter2 := moper.Query().Equal("damage", y)
+			update2 := moper.Query().Set(moper.P{K: "damage", V: z})
 
 			_, err = mocom.UpdateMany[Hero](ctx, filter2, update2)
 			if err != nil {
@@ -113,7 +171,7 @@ func TestTransactionFailed(t *testing.T) {
 	}
 
 	// get all hero has damage x or y
-	filter := moper.NewD().InEll("damage", x, y)
+	filter := moper.Query().InEll("damage", x, y)
 	count, err := mocom.Count[Hero](ctx, filter)
 	if err != nil {
 		t.Error(err)
@@ -122,7 +180,7 @@ func TestTransactionFailed(t *testing.T) {
 	}
 
 	// get all hero has damage z
-	filter = moper.NewD().Equal("damage", z)
+	filter = moper.Query().Equal("damage", z)
 	count, err = mocom.Count[Hero](ctx, filter)
 	if err != nil {
 		t.Error(err)

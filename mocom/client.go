@@ -17,17 +17,17 @@ type Database struct {
 }
 
 // Connect mongodb://localhost:27017/?w=majority&retryWrites=false
-func Connect(ctx context.Context, uri string, dbName string) (*mongo.Client, error) {
+func Connect(ctx context.Context, uri string, dbName string) error {
 	var err error
 	client, err = mongo.Connect(ctx, options.Client().ApplyURI(uri))
 	if err != nil {
-		return nil, err
+		return err
 	}
 	db.Database = client.Database(dbName)
-	return client, err
+	return err
 }
 
-func Setup(database *mongo.Database) {
+func SetClient(database *mongo.Database) {
 	db.Database = database
 	client = db.Client()
 }
@@ -37,17 +37,9 @@ func GetClient() *mongo.Client {
 }
 
 func CollRead(collName string) *mongo.Collection {
-	return db.CollRead(collName)
-}
-
-func (db Database) CollRead(collName string) *mongo.Collection {
 	return db.Collection(collName, options.Collection().SetReadPreference(readpref.Nearest()))
 }
 
 func CollWrite(collName string) *mongo.Collection {
-	return db.CollWrite(collName)
-}
-
-func (db Database) CollWrite(collName string) *mongo.Collection {
 	return db.Collection(collName, options.Collection().SetReadPreference(readpref.Primary()))
 }

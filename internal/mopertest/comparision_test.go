@@ -11,7 +11,7 @@ import (
 func TestEquals(t *testing.T) {
 	ctx := context.Background()
 	for i := 0; i < ROUND; i++ {
-		filter := moper.NewD().Equal("damage", i+1)
+		filter := moper.Query().Equal("damage", i+1)
 
 		if count, err := mocom.Count[Hero](ctx, filter); err != nil {
 			t.Error("[TestEquals]:", err)
@@ -27,7 +27,7 @@ func TestNotEquals(t *testing.T) {
 	for i := 0; i < ROUND; i++ {
 		num := i + 1
 
-		filter := moper.NewD().NotEqual("damage", num)
+		filter := moper.Query().NotEqual("damage", num)
 
 		if count, err := mocom.Count[Hero](ctx, filter); err != nil {
 			t.Error("[TestNotEquals]:", err)
@@ -47,7 +47,7 @@ func TestIn(t *testing.T) {
 		for j := 0; j < i; j++ {
 			dmg2 := j + 1
 
-			filter := moper.NewD().InEll("damage", dmg1, dmg2)
+			filter := moper.Query().InEll("damage", dmg1, dmg2)
 
 			if count, err := mocom.Count[Hero](ctx, filter); err != nil {
 				t.Error("[TestIn]", err)
@@ -67,7 +67,7 @@ func TestNotIn(t *testing.T) {
 		for j := 0; j < i; j++ {
 			dmg2 := j + 1
 
-			filter := moper.NewD().NotInEll("damage", dmg1, dmg2)
+			filter := moper.Query().NotInEll("damage", dmg1, dmg2)
 
 			if count, err := mocom.Count[Hero](ctx, filter); err != nil {
 				t.Error("[TestNotIn]:", err)
@@ -84,7 +84,7 @@ func TestLess(t *testing.T) {
 	for i := 0; i <= ROUND; i++ {
 		num := i * (i - 1) / 2
 
-		filter := moper.NewD().Less("damage", i)
+		filter := moper.Query().Less("damage", i)
 
 		if count, err := mocom.Count[Hero](ctx, filter); err != nil {
 			t.Error("[TestLess]:", err)
@@ -100,7 +100,7 @@ func TestEqualLess(t *testing.T) {
 	for i := 0; i <= ROUND; i++ {
 		num := i * (i + 1) / 2
 
-		filter := moper.NewD().EqualLess("damage", i)
+		filter := moper.Query().EqualLess("damage", i)
 
 		if count, err := mocom.Count[Hero](ctx, filter); err != nil {
 			t.Error("[TestEqualLess]:", err)
@@ -116,7 +116,7 @@ func TestGreater(t *testing.T) {
 	for i := 0; i <= ROUND; i++ {
 		num := TOTAL - i*(i+1)/2
 
-		filter := moper.NewD().Greater("damage", i)
+		filter := moper.Query().Greater("damage", i)
 
 		if count, err := mocom.Count[Hero](ctx, filter); err != nil {
 			t.Error("[TestGreater]:", err)
@@ -133,7 +133,7 @@ func TestEqualGreater(t *testing.T) {
 	for i := 0; i <= ROUND; i++ {
 		num := TOTAL - i*(i-1)/2
 
-		filter := moper.NewD().EqualGreater("damage", i)
+		filter := moper.Query().EqualGreater("damage", i)
 
 		if count, err := mocom.Count[Hero](ctx, filter); err != nil {
 			t.Error("[TestEqualGreater]:", err)

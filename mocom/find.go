@@ -6,7 +6,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func FindMany[T Model](ctx context.Context, filter interface{}, opts ...*options.FindOptions) (res []T, err error) {
+func Find[T Model](ctx context.Context, filter interface{}, opts ...*options.FindOptions) (res []T, err error) {
 	var t T
 	cur, err := CollRead(t.CollName()).Find(ctx, filter, opts...)
 	if err != nil {
@@ -17,7 +17,7 @@ func FindMany[T Model](ctx context.Context, filter interface{}, opts ...*options
 	return res, err
 }
 
-func Find[T Model](ctx context.Context, filter interface{}, opts ...*options.FindOneOptions) (res *T, err error) {
+func FindOne[T Model](ctx context.Context, filter interface{}, opts ...*options.FindOneOptions) (res *T, err error) {
 	res = new(T)
 	var t T
 	cur := CollRead(t.CollName()).FindOne(ctx, filter, opts...)

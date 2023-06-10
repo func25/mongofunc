@@ -3,7 +3,6 @@ package mopertest
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"testing"
 
 	"github.com/func25/mongofunc/mocom"
@@ -14,14 +13,14 @@ import (
 func TestAggregation(t *testing.T) {
 	intArr := []int{1, 2, 3, 4, 5, 6, 7, 8, 9}
 
-	matchStage := moper.NewD().MatchD(*moper.NewD().InArray("damage", intArr))
-	groupStage := moper.NewD().Group(
+	matchStage := moper.Query().MatchD(moper.Query().InArray("damage", intArr))
+	groupStage := moper.Query().Group(
 		moper.P{K: "_id", V: nil},
-		moper.P{K: "total", V: moper.NewD().Sum("damage")},
+		moper.P{K: "total", V: moper.Query().Sum("damage")},
 	)
 
 	req := &mocom.AggregationRequest[Hero]{
-		Pipeline: []*moper.D{matchStage, groupStage},
+		Pipeline: []moper.D{matchStage, groupStage},
 		Options:  []*options.AggregateOptions{},
 	}
 	result, err := mocom.Aggregate(context.Background(), req)
@@ -43,28 +42,29 @@ func TestAggregation(t *testing.T) {
 
 func TestLookup(t *testing.T) {
 	intArr := []int{1}
-	matchStage := moper.NewD().MatchD(*moper.NewD().InArray("damage", intArr))
+	matchStage := moper.Query().MatchD(moper.Query().InArray("damage", intArr))
 
-	lookupStage := moper.NewD().LookUp().
+	lookupStage := moper.Query().LookUp().
 		From(Weapon{}.CollName()).
 		LocalField("damage").
 		ForeignField("damage").
 		As("weapon")
 
-	unwindStage := moper.NewD().Equal("$unwind", moper.NewD().Equal("path", "$weapon").Equal("preserveNullAndEmptyArrays", false))
+	unwindStage := moper.Query().Equal("$unwind", moper.Query().Equal("path", "$weapon").Equal("preserveNullAndEmptyArrays", false))
 
 	req := &mocom.AggregationRequest[Hero]{
-		Pipeline: []*moper.D{matchStage, lookupStage.D(), unwindStage},
+		Pipeline: []moper.D{matchStage, lookupStage.D(), unwindStage},
 		Options:  []*options.AggregateOptions{},
 	}
 	result, err := mocom.Aggregate(context.Background(), req)
 	if err != nil {
-		t.Error(err)
-		return
+		t.Fatal(err)
 	}
 
-	x, err := json.Marshal(result)
-	fmt.Println(string(x))
+	_, err = json.Marshal(result)
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	// expect := 0
 	// for _, v := range intArr {

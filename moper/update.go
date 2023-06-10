@@ -10,52 +10,45 @@ const (
 )
 
 // SET
-func (d *D) Set(pairs ...P) *D {
-	*d = append(*d, bson.E{Key: _set, Value: toPair(pairs)})
-	return d
+func (d D) Set(pairs ...P) D {
+	return append(d, bson.E{Key: _set, Value: toPair(pairs)})
 }
 
-func (d *D) SetD(pairs D) *D {
-	*d = append(*d, bson.E{Key: _set, Value: pairs})
-	return d
+func (d D) SetD(pairs D) D {
+	return append(d, bson.E{Key: _set, Value: pairs})
 }
 
 // UNSET
-func (d *D) Unset(keys ...string) *D {
+func (d D) Unset(keys ...string) D {
 	res := D{}
 	for i := range keys {
 		res = append(res, bson.E{Key: keys[i], Value: ""})
 	}
-	*d = append(*d, bson.E{Key: _unset, Value: res})
-	return d
+	return append(d, bson.E{Key: _unset, Value: res})
 }
 
 // INC
-func (d *D) Inc(pairs ...P) *D {
+func (d D) Inc(pairs ...P) D {
 	pairLen := len(pairs)
 	updated := D{}
 	for i := 0; i < pairLen; i++ {
 		updated = append(updated, bson.E{Key: pairs[i].K, Value: pairs[i].V})
 	}
-	*d = append(*d, bson.E{Key: _inc, Value: updated})
-	return d
+	return append(d, bson.E{Key: _inc, Value: updated})
 }
 
-func (d *D) IncD(pairs D) *D {
-	*d = append(*d, bson.E{Key: _inc, Value: pairs})
-	return d
-}
-
-// PUSH
-func (d *D) Push(pairs ...P) *D {
-	*d = append(*d, bson.E{Key: _push, Value: toPair(pairs)})
-	return d
+func (d D) IncD(pairs D) D {
+	return append(d, bson.E{Key: _inc, Value: pairs})
 }
 
 // PUSH
-func (d *D) PushD(pairs D) *D {
-	*d = append(*d, bson.E{Key: _push, Value: pairs})
-	return d
+func (d D) Push(pairs ...P) D {
+	return append(d, bson.E{Key: _push, Value: toPair(pairs)})
+}
+
+// PUSH
+func (d D) PushD(pairs D) D {
+	return append(d, bson.E{Key: _push, Value: pairs})
 }
 
 func toPair(pairs []P) bson.D {

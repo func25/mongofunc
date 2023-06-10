@@ -6,7 +6,6 @@ import "go.mongodb.org/mongo-driver/bson"
 // 	return Or(Equal(fieldName, value), Exist(fieldName, exist))
 // }
 
-func (d *D) Exists(fieldName string, exist bool) *D {
-	*d = append(*d, bson.E{Key: fieldName, Value: bson.M{"$exists": exist}})
-	return d
+func (d D) Exists(fieldName string, exist bool) D {
+	return append(d, bson.E{Key: fieldName, Value: bson.M{"$exists": exist}})
 }

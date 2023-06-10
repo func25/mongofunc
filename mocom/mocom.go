@@ -40,7 +40,7 @@ func Aggregate[T Model](ctx context.Context, req *AggregationRequest[T]) (res []
 // Flush clears all records of collection and return number of deleted records
 func Flush[T Model](ctx context.Context) (int64, error) {
 	var t T
-	result, err := db.Collection(t.CollName()).DeleteMany(ctx, moper.NewD())
+	result, err := db.Collection(t.CollName()).DeleteMany(ctx, moper.Query())
 	if err != nil {
 		return 0, err
 	}
@@ -48,8 +48,20 @@ func Flush[T Model](ctx context.Context) (int64, error) {
 	return result.DeletedCount, err
 }
 
-// Tx -> transaction
+type SessionKey struct{}
+
+// Tx executes a MongoDB transaction based on provided configuration (cfg).
+// ctx is the context for the transaction, while cfg includes session configuration,
+// transaction options, and the transaction function.
+// Returns the result of transaction function execution or an error if the client is nil or
+// any issues occurred during the session creation or transaction.
 func Tx(ctx context.Context, cfg TransactionConfig) (interface{}, error) {
+	if preSession := ctx.Value(SessionKey{}); preSession != nil {
+		if mongoSession, ok := preSession.(mongo.Session); ok {
+			return cfg.Func(mongo.NewSessionContext(ctx, mongoSession))
+		}
+	}
+
 	if client == nil {
 		return nil, errors.New("client is nil, please using mocom to create connection to mongo server or using your own client connection")
 	}
@@ -60,6 +72,7 @@ func Tx(ctx context.Context, cfg TransactionConfig) (interface{}, error) {
 	}
 	defer session.EndSession(context.Background())
 
+	ctx = context.WithValue(ctx, SessionKey{}, session)
 	return session.WithTransaction(ctx, cfg.Func, cfg.Options)
 }
 
@@ -67,9 +80,16 @@ func Tx(ctx context.Context, cfg TransactionConfig) (interface{}, error) {
 // snapshot read-concern, primary read preference
 //
 // This should be used when transaction does not contain any read
+// If a nested transaction is detected, then this transaction will be executed with the passed-in context.
 func TxOptimal(ctx context.Context, f func(ctx mongo.SessionContext) (interface{}, error)) (interface{}, error) {
+	if preSession := ctx.Value(SessionKey{}); preSession != nil {
+		if mongoSession, ok := preSession.(mongo.Session); ok {
+			return f(mongo.NewSessionContext(ctx, mongoSession))
+		}
+	}
+
 	if client == nil {
-		return nil, errors.New("client is nil, please using mocom to create connection to mongo server or using your own client connection")
+		return nil, errors.New("client is nil, please using mocom.Connect to create connection to mongo server or using your own client connection")
 	}
 
 	wc := writeconcern.New(writeconcern.WMajority(), writeconcern.WTimeout(5*time.Second))
@@ -81,5 +101,12 @@ func TxOptimal(ctx context.Context, f func(ctx mongo.SessionContext) (interface{
 	}
 	defer session.EndSession(context.Background())
 
+	ctx = context.WithValue(ctx, SessionKey{}, session)
 	return session.WithTransaction(ctx, f, opts)
 }
+
+// if ctx.Value(ExportedSessionKey{}) != nil {
+// 	return f(ctx)
+// }
+
+// ctx = context.WithValue(ctx, ExportedSessionKey{}, true)

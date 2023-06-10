@@ -10,14 +10,14 @@ import (
 
 func TestExists(t *testing.T) {
 	ctx := context.Background()
-	filter := moper.NewD().Exists("omit", true)
+	filter := moper.Query().Exists("omit", true)
 	if count, err := mocom.Count[Hero](ctx, filter); err != nil {
 		t.Error("[TestExists]", err)
 	} else if count != int64(ROUND) {
 		t.Error("[TestExists]", count, "!=", int64(ROUND))
 	}
 
-	filter = moper.NewD().Exists("omit", false)
+	filter = moper.Query().Exists("omit", false)
 	if count, err := mocom.Count[Hero](ctx, filter); err != nil {
 		t.Error("[TestExists]", err)
 	} else if count != int64(ROUND*(ROUND-1)/2) {
