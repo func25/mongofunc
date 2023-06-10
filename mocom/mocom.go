@@ -5,7 +5,7 @@ import (
 	"errors"
 	"time"
 
-	"github.com/func25/mongofunc/moper"
+	"github.com/func25/mongofunc/v2/moper"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"

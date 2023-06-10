@@ -1,4 +1,4 @@
-module github.com/func25/mongofunc
+module github.com/func25/mongofunc/v2
 
 go 1.20
 

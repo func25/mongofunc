@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/func25/mongofunc/mocom"
+	"github.com/func25/mongofunc/v2/mocom"
 )
 
 // weapon

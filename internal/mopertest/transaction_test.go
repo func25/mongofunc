@@ -7,8 +7,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/func25/mongofunc/mocom"
-	"github.com/func25/mongofunc/moper"
+	"github.com/func25/mongofunc/v2/mocom"
+	"github.com/func25/mongofunc/v2/moper"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )

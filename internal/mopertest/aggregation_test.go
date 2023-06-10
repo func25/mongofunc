@@ -5,8 +5,8 @@ import (
 	"encoding/json"
 	"testing"
 
-	"github.com/func25/mongofunc/mocom"
-	"github.com/func25/mongofunc/moper"
+	"github.com/func25/mongofunc/v2/mocom"
+	"github.com/func25/mongofunc/v2/moper"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
