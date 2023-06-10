@@ -55,6 +55,7 @@ type SessionKey struct{}
 // transaction options, and the transaction function.
 // Returns the result of transaction function execution or an error if the client is nil or
 // any issues occurred during the session creation or transaction.
+// If a nested transaction is detected, then this transaction will be executed with the passed-in context.
 func Tx(ctx context.Context, cfg TransactionConfig) (interface{}, error) {
 	if preSession := ctx.Value(SessionKey{}); preSession != nil {
 		if mongoSession, ok := preSession.(mongo.Session); ok {

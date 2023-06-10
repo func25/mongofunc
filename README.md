@@ -1,4 +1,5 @@
 # Mongofunc
+
 Mongofunc is just a wrapper (mostly for personal project) to make life easier to interact with mongo query, transaction,...
 
 ## Content:
@@ -16,23 +17,26 @@ Mongofunc is just a wrapper (mostly for personal project) to make life easier to
 ## Installation
 
 ```sh
-$ go get -u github.com/func25/mongofunc
+$ go get -u github.com/func25/mongofunc/v2
 ```
 
 ## Quick start
+
 You can walkaround to find out more commands, but here are some
 
 ### moper package
 
 #### You might using comparision queries like this:
+
 ```go
-filter := moper.NewD().
+filter := moper.Query().
 	Equal("damage", 10).
 	EqualLess("health", 100).
 	Greater("speed", 20.1)
 ```
 
 You can compare time.Time like this:
+
 ```go
 filter := moper.Init(
   moper.EqualGreaterTime("expired", time.Now())
@@ -40,8 +44,9 @@ filter := moper.Init(
 ```
 
 #### Update commands
+
 ```go
-update := moper.NewD().Set(
+update := moper.Query().Set(
 	moper.P{"damage", 10},
 	moper.P{"health", 1},
 ).Inc(
@@ -50,13 +55,14 @@ update := moper.NewD().Set(
 ```
 
 Support simple aggregation:
+
 ```go
 intArr := []int{1, 2, 3, 4, 5, 6, 7, 8, 9}
 
-matchStage := moper.NewD().MatchD(moper.NewD().InArray("damage", intArr))
-groupStage := moper.NewD().Group(
+matchStage := moper.Query().MatchD(moper.Query().InArray("damage", intArr))
+groupStage := moper.Query().Group(
 	moper.P{K: "_id", V: nil},
-	moper.P{K: "total", V: moper.NewD().Sum("damage")},
+	moper.P{K: "total", V: moper.Query().Sum("damage")},
 )
 
 req := &mocom.AggregationRequest[Hero]{
@@ -66,9 +72,11 @@ req := &mocom.AggregationRequest[Hero]{
 ```
 
 ### mocom package
-Unlike moper, mocom is designed to interact directly with mongodb; 
+
+Unlike moper, mocom is designed to interact directly with mongodb;
 
 #### Connect with mocom
+
 But before using it, you have to connect using mocom.Connect or if you're using your own library to manage your connection, then use mocom.Setup
 
 ```go
@@ -79,21 +87,21 @@ if err != nil {
 }
 
 // using setup if you already have a client object
-db = client.Database("DbName")
-mocom.Setup(db)
+mocom.SetDatabase(db)
 ```
 
 #### mocom commands
 
 To use mocom command, your models should meet the mocom.Model interface{}
+
 ```go
 type Model interface {
 	CollName() string
 }
 
 // Hero is Model
-filter := moper.NewD().Equal("damage", -i)
-update := moper.NewD().Set(moper.P{K: "damage", V: i})
+filter := moper.Query().Equal("damage", -i)
+update := moper.Query().Set(moper.P{K: "damage", V: i})
 
 result, err := mocom.UpdateMany[Hero](ctx, filter, update)
 ```
@@ -108,8 +116,9 @@ _, err := mocom.TxOptimal(ctx, func(ctx mongo.SessionContext) (interface{}, erro
 })
 
 if err != nil {
-  t.Error(err)
+  return err
 }
 ```
 
-TxOptimal is used with snapshot read-concern, write majority write-concern and primary read-preference (of course)
+TxOptimal is used with snapshot read-concern, write majority write-concern and primary read-preference.
+If a nested transaction is detected, then this transaction will be executed with the passed-in context.

@@ -27,7 +27,7 @@ func Connect(ctx context.Context, uri string, dbName string) error {
 	return err
 }
 
-func SetClient(database *mongo.Database) {
+func SetDatabase(database *mongo.Database) {
 	db.Database = database
 	client = db.Client()
 }
