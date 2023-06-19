@@ -1,6 +1,8 @@
 package mocom
 
 import (
+	"fmt"
+
 	"github.com/func25/mongofunc/v2/moper"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -15,7 +17,7 @@ type Model interface {
 // -------- MODEL + ID --------
 type IDModel interface {
 	Model
-	SetID(t interface{})
+	SetID(t any)
 }
 
 type ID = IDT[any]
@@ -30,8 +32,13 @@ type IDT[T any] struct {
 	ID T `json:"id" bson:"_id,omitempty"`
 }
 
-func (id *IDT[T]) SetID(t T) {
-	id.ID = t
+func (id *IDT[T]) SetID(t any) {
+	var ok bool
+
+	id.ID, ok = t.(T)
+	if !ok {
+		fmt.Println("SetID: type assertion failed")
+	}
 }
 
 // -------- AGGREGATION --------
