@@ -14,7 +14,7 @@ func TestSet(t *testing.T) {
 	// change all damages to negative
 	for i := 1; i <= ROUND; i++ {
 		filter := moper.Query().Equal("damage", i)
-		update := moper.Query().Set(moper.P{K: "damage", V: -i})
+		update := moper.Query().Set("damage", -i)
 
 		result, err := mocom.UpdateManyT[Hero](ctx, filter, update)
 		if err != nil {
@@ -31,7 +31,7 @@ func TestSet(t *testing.T) {
 	// change damages to positive
 	for i := 1; i <= ROUND; i++ {
 		filter := moper.Query().Equal("damage", -i)
-		update := moper.Query().Set(moper.P{K: "damage", V: i})
+		update := moper.Query().Set("damage", i)
 
 		result, err := mocom.UpdateManyT[Hero](ctx, filter, update)
 		if err != nil {
@@ -51,7 +51,7 @@ func TestInc(t *testing.T) {
 	for i := ROUND; i >= 0; i-- {
 		filter := moper.Query().Equal("damage", i)
 
-		update := moper.Query().Inc(moper.P{K: "damage", V: i})
+		update := moper.Query().Inc("damage", i)
 
 		result, err := mocom.UpdateManyT[Hero](ctx, filter, update)
 		if err != nil {
@@ -67,10 +67,7 @@ func TestInc(t *testing.T) {
 
 	for i := 1; i <= ROUND; i++ {
 		filter := moper.Query().Equal("damage", i*2)
-		update := moper.Query().Inc(moper.P{
-			K: "damage",
-			V: -i,
-		})
+		update := moper.Query().Inc("damage", -i)
 
 		result, err := mocom.UpdateManyT[Hero](ctx, filter, update)
 		if err != nil {
@@ -89,7 +86,7 @@ func TestPush(t *testing.T) {
 	ctx := context.Background()
 
 	filter := moper.Query().Equal("damage", ROUND)
-	update := moper.Query().Push(moper.P{K: "skillIds", V: 6})
+	update := moper.Query().Push("skillIds", 6)
 
 	result, err := mocom.UpdateManyT[Hero](ctx, filter, update)
 	if err != nil {

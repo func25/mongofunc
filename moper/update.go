@@ -10,7 +10,11 @@ const (
 )
 
 // SET
-func (d D) Set(pairs ...P) D {
+func (d D) Set(key string, value interface{}) D {
+	return append(d, bson.E{Key: _set, Value: bson.D{{Key: key, Value: value}}})
+}
+
+func (d D) SetMany(pairs ...P) D {
 	return append(d, bson.E{Key: _set, Value: toPair(pairs)})
 }
 
@@ -28,7 +32,11 @@ func (d D) Unset(keys ...string) D {
 }
 
 // INC
-func (d D) Inc(pairs ...P) D {
+func (d D) Inc(key string, value interface{}) D {
+	return append(d, bson.E{Key: _inc, Value: bson.D{{Key: key, Value: value}}})
+}
+
+func (d D) IncMany(pairs ...P) D {
 	pairLen := len(pairs)
 	updated := D{}
 	for i := 0; i < pairLen; i++ {
@@ -42,7 +50,12 @@ func (d D) IncD(pairs D) D {
 }
 
 // PUSH
-func (d D) Push(pairs ...P) D {
+func (d D) Push(key string, value interface{}) D {
+	return append(d, bson.E{Key: _push, Value: bson.D{{Key: key, Value: value}}})
+}
+
+// PUSH
+func (d D) PushMany(pairs ...P) D {
 	return append(d, bson.E{Key: _push, Value: toPair(pairs)})
 }
 
