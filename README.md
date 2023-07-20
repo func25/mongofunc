@@ -151,7 +151,7 @@ if err := mocom.Connect(ctx, uri, dbName); err != nil {
 
 #### Working with Collections
 
-To use mocom command, your models should meet the mocom.Model interface{}
+You can now use the package to retrieve MongoDB collections for reading and writing:
 
 ```go
 // Get a collection for reading with read preference "Nearest"
