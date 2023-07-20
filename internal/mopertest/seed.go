@@ -22,12 +22,12 @@ func (Weapon) CollName() string {
 
 // hero
 type Hero struct {
-	mocom.ID `bson:",inline"`
-	WeaponID interface{} `bson:"weaponId"`
-	Name     string      `bson:"name"`
-	Damage   int         `bson:"damage"`
-	SkillIds []int       `bson:"skillIds"`
-	Omit     bool        `bson:"omit,omitempty"`
+	mocom.ObjectID `bson:",inline"`
+	WeaponID       interface{} `bson:"weaponId"`
+	Name           string      `bson:"name"`
+	Damage         int         `bson:"damage"`
+	SkillIds       []int       `bson:"skillIds"`
+	Omit           bool        `bson:"omit,omitempty"`
 }
 
 var (
@@ -76,7 +76,7 @@ func Seed(ctx context.Context, n int) error {
 
 	for i := 0; i < n; i++ {
 		for j := 0; j <= i; j, count = j+1, count+1 {
-			_, err := mocom.Create(ctx, &Hero{
+			_, err := mocom.CreateT(ctx, &Hero{
 				Name:     "hero" + strconv.Itoa(count),
 				Damage:   i + 1,
 				SkillIds: []int{1, 2, 3, 4, 5},

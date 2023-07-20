@@ -7,12 +7,19 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func UpdateOne[T Model](ctx context.Context, filter interface{}, update interface{}, opts ...*options.UpdateOptions) (*mongo.UpdateResult, error) {
-	var t T
-	return CollWrite(t.CollName()).UpdateOne(ctx, filter, update, opts...)
+func UpdateOne(ctx context.Context, collName string, filter interface{}, update interface{}, opts ...*options.UpdateOptions) (*mongo.UpdateResult, error) {
+	return CollWrite(collName).UpdateOne(ctx, filter, update, opts...)
 }
 
-func UpdateAndReturn[T Model](ctx context.Context, filter interface{}, update interface{}, opts ...*options.FindOneAndUpdateOptions) (*T, error) {
+// UpdateOne updates one document from collection
+func UpdateOneT[T Modeler](ctx context.Context, filter interface{}, update interface{}, opts ...*options.UpdateOptions) (*mongo.UpdateResult, error) {
+	var t T
+	return UpdateOne(ctx, t.CollName(), filter, update, opts...)
+}
+
+// UpdateAndReturn updates one document from collection and return the updated document
+// Pass options to return document AFTER or BEFORE the update
+func UpdateAndReturn[T Modeler](ctx context.Context, filter interface{}, update interface{}, opts ...*options.FindOneAndUpdateOptions) (*T, error) {
 	var t T
 	res := CollWrite(t.CollName()).FindOneAndUpdate(ctx, filter, update, opts...)
 
@@ -20,7 +27,13 @@ func UpdateAndReturn[T Model](ctx context.Context, filter interface{}, update in
 	return &t, err
 }
 
-func UpdateMany[T Model](ctx context.Context, filter interface{}, update interface{}, opts ...*options.UpdateOptions) (*mongo.UpdateResult, error) {
+func UpdateMany(ctx context.Context, collName string, filter interface{}, update interface{}, opts ...*options.UpdateOptions) (*mongo.UpdateResult, error) {
+	return CollWrite(collName).UpdateMany(ctx, filter, update, opts...)
+}
+
+// UpdateMany updates many documents from collection
+// model should be implement `CollName() string`
+func UpdateManyT[T Modeler](ctx context.Context, filter interface{}, update interface{}, opts ...*options.UpdateOptions) (*mongo.UpdateResult, error) {
 	var t T
-	return CollWrite(t.CollName()).UpdateMany(ctx, filter, update, opts...)
+	return UpdateMany(ctx, t.CollName(), filter, update, opts...)
 }

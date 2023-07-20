@@ -7,7 +7,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-// InEll is InEllipsis
+// InEll - InEllipsis
 func (d D) InEll(fieldName string, value ...interface{}) D {
 	return append(d, bson.E{Key: fieldName, Value: bson.M{"$in": value}})
 }
@@ -60,7 +60,6 @@ func (d D) GreaterTime(fieldName string, value time.Time) D {
 }
 
 // EQUAL
-
 func (d D) NotEqual(fieldName string, value interface{}) D {
 	return append(d, bson.E{Key: fieldName, Value: bson.M{"$ne": value}})
 }

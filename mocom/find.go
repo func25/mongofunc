@@ -6,7 +6,9 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func Find[T Model](ctx context.Context, filter interface{}, opts ...*options.FindOptions) (res []T, err error) {
+// Find finds documents from from model's collection
+// model should be implement `CollName() string`
+func FindT[T Modeler](ctx context.Context, filter interface{}, opts ...*options.FindOptions) (res []T, err error) {
 	var t T
 	cur, err := CollRead(t.CollName()).Find(ctx, filter, opts...)
 	if err != nil {
@@ -17,7 +19,9 @@ func Find[T Model](ctx context.Context, filter interface{}, opts ...*options.Fin
 	return res, err
 }
 
-func FindOne[T Model](ctx context.Context, filter interface{}, opts ...*options.FindOneOptions) (res *T, err error) {
+// FindOne finds one document from model's collection
+// model should be implement `CollName() string`
+func FindOne[T Modeler](ctx context.Context, filter interface{}, opts ...*options.FindOneOptions) (res *T, err error) {
 	res = new(T)
 	var t T
 	cur := CollRead(t.CollName()).FindOne(ctx, filter, opts...)

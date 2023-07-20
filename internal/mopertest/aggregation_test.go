@@ -19,11 +19,11 @@ func TestAggregation(t *testing.T) {
 		moper.P{K: "total", V: moper.Query().Sum("damage")},
 	)
 
-	req := &mocom.AggregationRequest[Hero]{
+	req := &mocom.AggregationRequest{
 		Pipeline: []moper.D{matchStage, groupStage},
 		Options:  []*options.AggregateOptions{},
 	}
-	result, err := mocom.Aggregate(context.Background(), req)
+	result, err := mocom.AggregateT[Hero](context.Background(), req)
 	if err != nil {
 		t.Error(err)
 		return
@@ -52,11 +52,11 @@ func TestLookup(t *testing.T) {
 
 	unwindStage := moper.Query().Equal("$unwind", moper.Query().Equal("path", "$weapon").Equal("preserveNullAndEmptyArrays", false))
 
-	req := &mocom.AggregationRequest[Hero]{
+	req := &mocom.AggregationRequest{
 		Pipeline: []moper.D{matchStage, lookupStage.D(), unwindStage},
 		Options:  []*options.AggregateOptions{},
 	}
-	result, err := mocom.Aggregate(context.Background(), req)
+	result, err := mocom.AggregateT[Hero](context.Background(), req)
 	if err != nil {
 		t.Fatal(err)
 	}

@@ -10,14 +10,18 @@ import (
 )
 
 // -------- MODEL --------
-type Model interface {
+type Modeler interface {
 	CollName() string
 }
 
 // -------- MODEL + ID --------
-type IDModel interface {
-	Model
+type IDer interface {
 	SetID(t any)
+}
+
+type IDModeler interface {
+	Modeler
+	IDer
 }
 
 type ID = IDT[any]
@@ -42,13 +46,13 @@ func (id *IDT[T]) SetID(t any) {
 }
 
 // -------- AGGREGATION --------
-type AggregationRequest[T Model] struct {
+type AggregationRequest struct {
 	Pipeline []moper.D
 	Options  []*options.AggregateOptions
 }
 
 // -------- TRANSACTION --------
-// TransactionConfig, you only need to define the func; the transaction options are not necessary for a simple application
+// TransactionConfig, you only need to define the func; the transaction options are not necessary to be defined for simple use cases
 type TransactionConfig struct {
 	Options    *options.TransactionOptions
 	SessConfig *options.SessionOptions

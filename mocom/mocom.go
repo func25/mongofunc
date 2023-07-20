@@ -14,19 +14,33 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/writeconcern"
 )
 
-func Count[T Model](ctx context.Context, filter interface{}, opts ...*options.CountOptions) (int64, error) {
-	var t T
-	return CollRead(t.CollName()).CountDocuments(ctx, filter, opts...)
+// Count counts documents from collection
+func Count(ctx context.Context, collName string, filter interface{}, opts ...*options.CountOptions) (int64, error) {
+	return CollRead(collName).CountDocuments(ctx, filter, opts...)
 }
 
-func EstimatedCount[T Model](ctx context.Context, opts ...*options.EstimatedDocumentCountOptions) (int64, error) {
+// CountT counts documents from collection
+// model should be implement `CollName() string`
+func CountT[T Modeler](ctx context.Context, filter interface{}, opts ...*options.CountOptions) (int64, error) {
 	var t T
-	return CollRead(t.CollName()).EstimatedDocumentCount(ctx, opts...)
+	return Count(ctx, t.CollName(), filter, opts...)
 }
 
-func Aggregate[T Model](ctx context.Context, req *AggregationRequest[T]) (res []bson.M, err error) {
+// EstimatedCount counts documents from collection but it is not accurate, still faster than Count
+func EstimatedCount(ctx context.Context, collName string, opts ...*options.EstimatedDocumentCountOptions) (int64, error) {
+	return CollRead(collName).EstimatedDocumentCount(ctx, opts...)
+}
+
+// EstimatedCountT counts documents from collection but it is not accurate, still faster than Count
+// model should be implement `CollName() string`
+func EstimatedCountT[T Modeler](ctx context.Context, opts ...*options.EstimatedDocumentCountOptions) (int64, error) {
 	var t T
-	col := db.Collection(t.CollName())
+	return EstimatedCount(ctx, t.CollName(), opts...)
+}
+
+// Aggregate aggregates documents based on Pipeline and Options from request
+func Aggregate(ctx context.Context, collName string, req *AggregationRequest) (res []bson.M, err error) {
+	col := db.Collection(collName)
 
 	cursor, err := col.Aggregate(ctx, req.Pipeline, req.Options...)
 	if err != nil {
@@ -37,8 +51,15 @@ func Aggregate[T Model](ctx context.Context, req *AggregationRequest[T]) (res []
 	return res, err
 }
 
+// Aggregate aggregates documents based on Pipeline and Options from request
+// model should be implement `CollName() string`
+func AggregateT[T Modeler](ctx context.Context, req *AggregationRequest) (res []bson.M, err error) {
+	var t T
+	return Aggregate(ctx, t.CollName(), req)
+}
+
 // Flush clears all records of collection and return number of deleted records
-func Flush[T Model](ctx context.Context) (int64, error) {
+func Flush[T Modeler](ctx context.Context) (int64, error) {
 	var t T
 	result, err := db.Collection(t.CollName()).DeleteMany(ctx, moper.Query())
 	if err != nil {
@@ -105,9 +126,3 @@ func TxOptimal(ctx context.Context, f func(ctx mongo.SessionContext) (interface{
 	ctx = context.WithValue(ctx, SessionKey{}, session)
 	return session.WithTransaction(ctx, f, opts)
 }
-
-// if ctx.Value(ExportedSessionKey{}) != nil {
-// 	return f(ctx)
-// }
-
-// ctx = context.WithValue(ctx, ExportedSessionKey{}, true)

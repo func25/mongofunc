@@ -13,6 +13,10 @@ type P struct {
 	V interface{}
 }
 
+func Pr(k string, v interface{}) P {
+	return P{k, v}
+}
+
 func Query() D {
 	return D{}
 }

@@ -16,7 +16,7 @@ func TestSet(t *testing.T) {
 		filter := moper.Query().Equal("damage", i)
 		update := moper.Query().Set(moper.P{K: "damage", V: -i})
 
-		result, err := mocom.UpdateMany[Hero](ctx, filter, update)
+		result, err := mocom.UpdateManyT[Hero](ctx, filter, update)
 		if err != nil {
 			t.Error("[TestSet]", err)
 			return
@@ -33,7 +33,7 @@ func TestSet(t *testing.T) {
 		filter := moper.Query().Equal("damage", -i)
 		update := moper.Query().Set(moper.P{K: "damage", V: i})
 
-		result, err := mocom.UpdateMany[Hero](ctx, filter, update)
+		result, err := mocom.UpdateManyT[Hero](ctx, filter, update)
 		if err != nil {
 			t.Error("[TestSet]", err)
 			return
@@ -53,7 +53,7 @@ func TestInc(t *testing.T) {
 
 		update := moper.Query().Inc(moper.P{K: "damage", V: i})
 
-		result, err := mocom.UpdateMany[Hero](ctx, filter, update)
+		result, err := mocom.UpdateManyT[Hero](ctx, filter, update)
 		if err != nil {
 			t.Error("[TestInc]", err)
 			return
@@ -72,7 +72,7 @@ func TestInc(t *testing.T) {
 			V: -i,
 		})
 
-		result, err := mocom.UpdateMany[Hero](ctx, filter, update)
+		result, err := mocom.UpdateManyT[Hero](ctx, filter, update)
 		if err != nil {
 			t.Error("[TestInc]", err)
 			return
@@ -91,7 +91,7 @@ func TestPush(t *testing.T) {
 	filter := moper.Query().Equal("damage", ROUND)
 	update := moper.Query().Push(moper.P{K: "skillIds", V: 6})
 
-	result, err := mocom.UpdateMany[Hero](ctx, filter, update)
+	result, err := mocom.UpdateManyT[Hero](ctx, filter, update)
 	if err != nil {
 		t.Error("[TestPush]", err)
 		return
@@ -99,7 +99,7 @@ func TestPush(t *testing.T) {
 
 	filter2 := moper.Query().Equal("skillIds", []int{1, 2, 3, 4, 5, 6})
 
-	if count, err := mocom.Count[Hero](ctx, filter2); err != nil {
+	if count, err := mocom.CountT[Hero](ctx, filter2); err != nil {
 		t.Error("[TestPush]", err)
 		return
 	} else if count != int64(ROUND) || result.ModifiedCount != int64(ROUND) {

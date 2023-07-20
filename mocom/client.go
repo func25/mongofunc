@@ -24,6 +24,11 @@ func Connect(ctx context.Context, uri string, dbName string) error {
 		return err
 	}
 	db.Database = client.Database(dbName)
+
+	if err := client.Ping(ctx, nil); err != nil {
+		return err
+	}
+
 	return err
 }
 

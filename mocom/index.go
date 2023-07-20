@@ -7,12 +7,26 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func AddIndex[T Model](ctx context.Context, index mongo.IndexModel, opts ...*options.CreateIndexesOptions) (string, error) {
-	var t T
-	return CollWrite(t.CollName()).Indexes().CreateOne(ctx, index, opts...)
+// AddIndex adds an index to collection
+func AddIndex(ctx context.Context, collName string, index mongo.IndexModel, opts ...*options.CreateIndexesOptions) (string, error) {
+	return CollWrite(collName).Indexes().CreateOne(ctx, index, opts...)
 }
 
-func AddIndexes[T Model](ctx context.Context, indexes []mongo.IndexModel, opts ...*options.CreateIndexesOptions) ([]string, error) {
+// AddIndex adds an index to collection
+// model should be implement `CollName() string`
+func AddIndexT[T Modeler](ctx context.Context, index mongo.IndexModel, opts ...*options.CreateIndexesOptions) (string, error) {
 	var t T
-	return CollWrite(t.CollName()).Indexes().CreateMany(ctx, indexes, opts...)
+	return AddIndex(ctx, t.CollName(), index, opts...)
+}
+
+// AddIndexes adds indexes to collection
+func AddIndexes(ctx context.Context, collName string, indexes []mongo.IndexModel, opts ...*options.CreateIndexesOptions) ([]string, error) {
+	return CollWrite(collName).Indexes().CreateMany(ctx, indexes, opts...)
+}
+
+// AddIndexes adds indexes to collection
+// model should be implement `CollName() string`
+func AddIndexesT[T Modeler](ctx context.Context, indexes []mongo.IndexModel, opts ...*options.CreateIndexesOptions) ([]string, error) {
+	var t T
+	return AddIndexes(ctx, t.CollName(), indexes, opts...)
 }
