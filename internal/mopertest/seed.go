@@ -41,7 +41,7 @@ func (Hero) CollName() string {
 
 // %s:%s/?w=majority&retryWrites=false
 func init() {
-	ctx, _ := context.WithTimeout(context.Background(), 3*time.Second)
+	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
 	err := mocom.Connect(ctx, "mongodb://localhost:27017/?w=majority&retryWrites=false", "defaultdb")
 	if err != nil {
 		log.Fatal("cannot connect mongo", err)

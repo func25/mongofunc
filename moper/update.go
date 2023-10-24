@@ -7,6 +7,8 @@ const (
 	_set   = "$set"
 	_push  = "$push"
 	_unset = "$unset"
+
+	_setOnInsert = "$setOnInsert"
 )
 
 // SET
@@ -20,6 +22,14 @@ func (d D) SetMany(pairs ...P) D {
 
 func (d D) SetD(pairs D) D {
 	return append(d, bson.E{Key: _set, Value: pairs})
+}
+
+func (d D) SetOnInsert(key string, value interface{}) D {
+	return append(d, bson.E{Key: _setOnInsert, Value: bson.D{{Key: key, Value: value}}})
+}
+
+func (d D) SetManyOnInsert(pairs ...P) D {
+	return append(d, bson.E{Key: _setOnInsert, Value: toPair(pairs)})
 }
 
 // UNSET
@@ -72,4 +82,9 @@ func toPair(pairs []P) bson.D {
 	}
 
 	return updated
+}
+
+// CUSTOM
+func (d D) CustomMany(cmd string, pairs ...P) D {
+	return append(d, bson.E{Key: cmd, Value: toPair(pairs)})
 }
