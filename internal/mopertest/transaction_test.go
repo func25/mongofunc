@@ -3,6 +3,7 @@ package mopertest
 import (
 	"context"
 	"errors"
+	"fmt"
 	"strconv"
 	"testing"
 	"time"
@@ -78,6 +79,14 @@ func TestNestedTransactionSuccess(t *testing.T) {
 	_, err := mocom.Tx(ctx, mocom.TransactionConfig{
 		Options: &options.TransactionOptions{},
 		Func: func(ctx mongo.SessionContext) (interface{}, error) {
+			filter := moper.Query().Equal("damage", x)
+			update := moper.Query().Set("damage", y)
+
+			_, err := mocom.UpdateManyT[Hero](ctx, filter, update)
+			if err != nil {
+				return nil, err
+			}
+
 			return NestedTransaction(ctx, x, y, z)
 		},
 	})
@@ -86,22 +95,15 @@ func TestNestedTransactionSuccess(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	// get all hero has damage x or y
-	filter := moper.Query().InEll("damage", x, y)
+	// get all hero has damage z
+	filter := moper.Query().Equal("damage", z)
 	count, err := mocom.CountT[Hero](ctx, filter)
 	if err != nil {
 		t.Error(err)
-	} else if count != 0 {
-		t.Error(errors.New("Transaction was operated wrong with count 1:" + strconv.Itoa(int(count))))
 	}
 
-	// get all hero has damage z
-	filter = moper.Query().Equal("damage", z)
-	count, err = mocom.CountT[Hero](ctx, filter)
-	if err != nil {
-		t.Error(err)
-	} else if int(count) != x+y+z {
-		t.Error(errors.New("Transaction was operated wrong with count 2:" + strconv.Itoa(int(count))))
+	if count != int64(x+y+z) {
+		t.Error(fmt.Errorf("Transaction was operated wrong with count %d vs %d", count, x+y+z))
 	}
 
 	Clear(ctx)
@@ -111,24 +113,15 @@ func TestNestedTransactionSuccess(t *testing.T) {
 func NestedTransaction(ctx context.Context, x, y, z int) (any, error) {
 	ctx, _ = context.WithTimeout(ctx, 5*time.Second)
 	return mocom.TxOptimal(ctx, func(ctx mongo.SessionContext) (interface{}, error) {
-		filter := moper.Query().Equal("damage", x)
-		update := moper.Query().Set("damage", y)
+		filter := moper.Query().Equal("damage", y)
+		update := moper.Query().Set("damage", z)
 
-		_, err := mocom.UpdateManyT[Hero](ctx, filter, update)
+		result, err := mocom.UpdateManyT[Hero](ctx, filter, update)
 		if err != nil {
 			return nil, err
 		}
 
-		// update damage y to z
-		filter2 := moper.Query().Equal("damage", y)
-		update2 := moper.Query().Set("damage", z)
-
-		result2, err := mocom.UpdateManyT[Hero](ctx, filter2, update2)
-		if err != nil {
-			return nil, err
-		}
-
-		return result2, nil
+		return result, nil
 	})
 }
 
