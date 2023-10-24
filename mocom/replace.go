@@ -14,14 +14,8 @@ func ReplaceOne(ctx context.Context, collName string, filter interface{}, model 
 }
 
 // ReplaceOneT replaces one document from collection
-// upsert = true if you want to upsert, use mocom.CreateIfNotExists
+// upsert = true if you want to upsert
 // model should be implement `CollName() string`
 func ReplaceOneT[T Modeler](ctx context.Context, filter interface{}, model T, opts ...*options.ReplaceOptions) (*mongo.UpdateResult, error) {
 	return ReplaceOne(ctx, model.CollName(), filter, model, opts...)
-}
-
-// CreateIfNotExists adds or updates one document from collection
-// model should be implement `CollName() string`
-func CreateIfNotExists[T Modeler](ctx context.Context, filter interface{}, model T) (*mongo.UpdateResult, error) {
-	return CollWrite(model.CollName()).ReplaceOne(ctx, filter, model, options.Replace().SetUpsert(true))
 }

@@ -85,6 +85,10 @@ func toPair(pairs []P) bson.D {
 }
 
 // CUSTOM
+func (d D) Custom(cmd string, value any) D {
+	return append(d, bson.E{Key: cmd, Value: value})
+}
+
 func (d D) CustomMany(cmd string, pairs ...P) D {
 	return append(d, bson.E{Key: cmd, Value: toPair(pairs)})
 }
